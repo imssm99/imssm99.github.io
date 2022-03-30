@@ -31,7 +31,18 @@ driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#3
         }
 
     </style>
-</noscript><meta property="og:title" content="Codegate2022 Qual Writeup" />
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HS7MTQNBY5"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-HS7MTQNBY5', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Codegate2022 Qual Writeup" />
 <meta property="og:description" content="University Division, imssm99, 3rd (4249 points)
  CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
 driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
