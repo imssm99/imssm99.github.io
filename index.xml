@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>imssm99 Blog</title>
+    <link>https://blog.imssm99.com/</link>
+    <description>Recent content on imssm99 Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 30 Mar 2022 10:34:54 +0900</lastBuildDate><atom:link href="https://blog.imssm99.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Soomin Shin (imssm99)</title>
+      <link>https://blog.imssm99.com/aboutme/</link>
+      <pubDate>Wed, 30 Mar 2022 10:38:30 +0900</pubDate>
+      
+      <guid>https://blog.imssm99.com/aboutme/</guid>
+      <description>Information  Email: imssm99@gmail.com 2021.07 ~ 2023.01, Republic of Korea Army  Education  2019.03 ~ ?, Seoultech, Computer Science and Enginnering 2020.07 ~ 2021.03, KITRI Best of the Best 9th, Vulnerability Analysis (TOP30)  Bug Report  CVE-2021-25424 (SVE-2021-19928): Improper Bluetooth pairing mode in Tizen device (WatchOver, KITRI BoB 9th) CVE-2021-25433 (SVE-2021-19702): Improper authorization vulnerability in Tizen factory reset policy (WatchOver, KITRI BoB 9th) CVE-2021-25434 (SVE-2021-19703): Improper input validation vulnerability in Tizen bootloader (WatchOver, KITRI BoB 9th) CVE-2021-25435 (SVE-2021-19705): Improper input validation vulnerability in Tizen bootloader (WatchOver, KITRI BoB 9th) CVE-2021-25436 (SVE-2021-19310): Improper file validation vulnerability in Tizen FOTA service (WatchOver, KITRI BoB 9th) CVE-2021-25437 (SVE-2021-19311): Improper access control vulnerability in Tizen FOTA service (WatchOver, KITRI BoB 9th) NBB-1718: Naver Office Form XSS  Project  2020.</description>
+    </item>
+    
+    <item>
+      <title>Codegate2022 Qual Writeup</title>
+      <link>https://blog.imssm99.com/ctf/codegate2022_qual/</link>
+      <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
+      
+      <guid>https://blog.imssm99.com/ctf/codegate2022_qual/</guid>
+      <description>University Division, imssm99, 3rd (4249 points)
+ CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&amp;#39;http://3.39.55.38:1929/login&amp;#39;) driver.find_element_by_id(&amp;#39;id&amp;#39;).send_keys(&amp;#39;admin&amp;#39;) driver.find_element_by_id(&amp;#39;pw&amp;#39;).send_keys(&amp;#39;$MiLEYEN4&amp;#39;) driver.find_element_by_id(&amp;#39;submit&amp;#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&amp;#34;auth_crypt_key&amp;#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &amp;#34;AdminController&amp;#34; {  domain := this.Ctx.Input.Domain()   if domain != &amp;#34;localhost&amp;#34; {  this.</description>
+    </item>
+    
+  </channel>
+</rss>
