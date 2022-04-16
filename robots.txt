@@ -1,3 +1,3 @@
 User-agent: *
 Disallow:
-Sitemap: https://blog.imssm99.com/sitemap.xml
+Sitemap: https://blog.imssm99.kr/sitemap.xml
