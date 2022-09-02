@@ -6,20 +6,11 @@
     <description>Recent content in Tags on imssm99 Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 28 Mar 2022 14:22:00 +0900</lastBuildDate><atom:link href="https://blog.imssm99.kr/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>codegate</title>
-      <link>https://blog.imssm99.kr/tags/codegate/</link>
-      <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
-      
-      <guid>https://blog.imssm99.kr/tags/codegate/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Thu, 01 Sep 2022 20:00:00 +0900</lastBuildDate><atom:link href="https://blog.imssm99.kr/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ctf</title>
       <link>https://blog.imssm99.kr/tags/ctf/</link>
-      <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
+      <pubDate>Thu, 01 Sep 2022 20:00:00 +0900</pubDate>
       
       <guid>https://blog.imssm99.kr/tags/ctf/</guid>
       <description></description>
@@ -28,9 +19,18 @@
     <item>
       <title>writeup</title>
       <link>https://blog.imssm99.kr/tags/writeup/</link>
-      <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
+      <pubDate>Thu, 01 Sep 2022 20:00:00 +0900</pubDate>
       
       <guid>https://blog.imssm99.kr/tags/writeup/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>codegate</title>
+      <link>https://blog.imssm99.kr/tags/codegate/</link>
+      <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
+      
+      <guid>https://blog.imssm99.kr/tags/codegate/</guid>
       <description></description>
     </item>
     

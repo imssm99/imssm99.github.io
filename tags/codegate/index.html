@@ -96,9 +96,9 @@ if (!doNotTrack) {
   </header>
   <div class="entry-content">
     <p>University Division, imssm99, 3rd (4249 points)
- CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
-driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
-... } else if controllerName == &#34;AdminController&#34; {  domain := this.Ctx.Input.Domain()   if domain != &#34;localhost&#34; {  this....</p>
+CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2) superbee func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &#34;AdminController&#34; { domain := this.Ctx.Input.Domain() if domain != &#34;localhost&#34; { this.Abort(&#34;Not Local&#34;) return } } ... func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this....</p>
   </div>
   <footer class="entry-footer"><span title='2022-03-28 14:22:00 +0900 KST'>March 28, 2022</span>&nbsp;·&nbsp;imssm99</footer>
   <a class="entry-link" aria-label="post link to Codegate2022 Qual Writeup" href="https://blog.imssm99.kr/ctf/codegate2022_qual/"></a>

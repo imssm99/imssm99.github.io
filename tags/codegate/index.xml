@@ -14,9 +14,9 @@
       
       <guid>https://blog.imssm99.kr/ctf/codegate2022_qual/</guid>
       <description>University Division, imssm99, 3rd (4249 points)
- CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
-driver.get(&amp;#39;http://3.39.55.38:1929/login&amp;#39;) driver.find_element_by_id(&amp;#39;id&amp;#39;).send_keys(&amp;#39;admin&amp;#39;) driver.find_element_by_id(&amp;#39;pw&amp;#39;).send_keys(&amp;#39;$MiLEYEN4&amp;#39;) driver.find_element_by_id(&amp;#39;submit&amp;#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&amp;#34;auth_crypt_key&amp;#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
-... } else if controllerName == &amp;#34;AdminController&amp;#34; {  domain := this.Ctx.Input.Domain()   if domain != &amp;#34;localhost&amp;#34; {  this.</description>
+CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&amp;#39;http://3.39.55.38:1929/login&amp;#39;) driver.find_element_by_id(&amp;#39;id&amp;#39;).send_keys(&amp;#39;admin&amp;#39;) driver.find_element_by_id(&amp;#39;pw&amp;#39;).send_keys(&amp;#39;$MiLEYEN4&amp;#39;) driver.find_element_by_id(&amp;#39;submit&amp;#39;).click() time.sleep(2) superbee func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&amp;#34;auth_crypt_key&amp;#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &amp;#34;AdminController&amp;#34; { domain := this.Ctx.Input.Domain() if domain != &amp;#34;localhost&amp;#34; { this.Abort(&amp;#34;Not Local&amp;#34;) return } } ... func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.</description>
     </item>
     
   </channel>

