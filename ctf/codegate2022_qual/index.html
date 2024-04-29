@@ -13,9 +13,7 @@ driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#3
 ... } else if controllerName == &#34;AdminController&#34; { domain := this.Ctx.Input.Domain() if domain != &#34;localhost&#34; { this.Abort(&#34;Not Local&#34;) return } } ... func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.">
 <meta name="author" content="imssm99">
 <link rel="canonical" href="https://blog.imssm99.kr/ctf/codegate2022_qual/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.imssm99.kr/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.imssm99.kr/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.imssm99.kr/favicon-32x32.png">
@@ -153,7 +151,7 @@ driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#3
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       Codegate2022 Qual Writeup
     </h1>
     <div class="post-meta"><span title='2022-03-28 14:22:00 +0900 KST'>March 28, 2022</span>&nbsp;·&nbsp;imssm99
@@ -245,17 +243,17 @@ driver.get(&#39;http://3.39.55.38:1929/login&#39;) driver.find_element_by_id(&#3
 <p><code>lookupImg</code> Method는 메모 내용의 <code>[]</code> 안의 url을 읽어 그 내용을 base64 encode하여 img src에 출력해준다.
 URL의 처음에 <code>file:</code>이 있으면 동작하지 않는다.
 이를 우회하기 위해 java.net.URL에서 찾은 다음과 같은 코드를 이용했다.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spec<span style="color:#f92672">.</span><span style="color:#a6e22e">regionMatches</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> start<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;url:&#34;</span><span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> 4<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    start <span style="color:#f92672">+=</span> 4<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (spec.<span style="color:#a6e22e">regionMatches</span>(<span style="color:#66d9ef">true</span>, start, <span style="color:#e6db74">&#34;url:&#34;</span>, 0, 4)) {
+</span></span><span style="display:flex;"><span>    start <span style="color:#f92672">+=</span> 4;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>메모 내용에 <code>[url:file:/flag]</code> 를 쓴 후 읽는다.
 img src의 값을 base64 decode하여 flag를 획득 할 수 있었다.
 <code>data:image/jpeg;charset=utf-8;base64,Y29kZWdhdGUyMDIyezg5NTNiZjgzNGZkZGUzNGFlNTE5Mzc5NzVjNzhhODk1ODYzZGUxZTF9Cg==</code></p>
 <hr>
 <h2 id="myblog">myblog<a hidden class="anchor" aria-hidden="true" href="#myblog">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>XPath xpath <span style="color:#f92672">=</span> XPathFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">().</span><span style="color:#a6e22e">newXPath</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>      String title <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span>xpath<span style="color:#f92672">.</span><span style="color:#a6e22e">evaluate</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/title/text()&#34;</span><span style="color:#f92672">,</span> document<span style="color:#f92672">,</span> XPathConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">STRING</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>      String content <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span>xpath<span style="color:#f92672">.</span><span style="color:#a6e22e">evaluate</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/content/text()&#34;</span><span style="color:#f92672">,</span> document<span style="color:#f92672">,</span> XPathConstants<span style="color:#f92672">.</span><span style="color:#a6e22e">STRING</span><span style="color:#f92672">);</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>XPath xpath <span style="color:#f92672">=</span> XPathFactory.<span style="color:#a6e22e">newInstance</span>().<span style="color:#a6e22e">newXPath</span>();
+</span></span><span style="display:flex;"><span>      String title <span style="color:#f92672">=</span> (String)xpath.<span style="color:#a6e22e">evaluate</span>(<span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/title/text()&#34;</span>, document, XPathConstants.<span style="color:#a6e22e">STRING</span>);
+</span></span><span style="display:flex;"><span>      String content <span style="color:#f92672">=</span> (String)xpath.<span style="color:#a6e22e">evaluate</span>(<span style="color:#e6db74">&#34;//article[@idx=&#39;&#34;</span> <span style="color:#f92672">+</span> idx <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#39;]/content/text()&#34;</span>, document, XPathConstants.<span style="color:#a6e22e">STRING</span>);
 </span></span></code></pre></div><p>/blog/read에서 idx 인자에 xpath injection이 가능하다.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-docker" data-lang="docker"><span style="display:flex;"><span><span style="color:#66d9ef">RUN</span> echo <span style="color:#e6db74">&#39;flag=codegate2022{md5(flag)}&#39;</span> &gt;&gt; /usr/local/tomcat/conf/catalina.properties<span style="color:#960050;background-color:#1e0010">
 </span></span></span></code></pre></div><p>catalina.properties에 flag가 저장되어 있으므로 <code>system-property(’flag’)</code>를 이용하면 flag를 획득할 수 있다.</p>
@@ -394,7 +392,8 @@ code의 처음에 0x0이 있다면 그대로 <code>run_vm()</code>이 정상적�
     </main>
     
 <footer class="footer">
-    <span>&copy; 2023 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span>
+        <span>&copy; 2024 <a href="https://blog.imssm99.kr/">imssm99 Blog</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

